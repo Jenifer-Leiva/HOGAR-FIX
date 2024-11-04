@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "823167941591",
+    "project_id": "hogarfix-81c90",
+    "storage_bucket": "hogarfix-81c90.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:823167941591:android:a0cdb7fa89d5c9a0c62992",
+        "android_client_info": {
+          "package_name": "com.hogarfix.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQ5ZZXmHJt4kzfdOiNpdDqXYfm55w3c8s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
