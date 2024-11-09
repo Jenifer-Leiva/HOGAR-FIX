@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class Inicio extends StatelessWidget{
-  const Inicio({super.key});
+class PerfilProveedor extends StatelessWidget{
+  const PerfilProveedor({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("inicio"),
+        title: const Text("PerfilProveedor"),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed:() => context.go('/pagina'), 
-              child: const Text("ir a pagina 2")
+              onPressed:() => context.go('/EditarPerfilProveedor'), 
+              child: const Text("ir a EditarPerfilProveedor ")
               )
           ],
         ),
