@@ -15,7 +15,7 @@ class Soporte extends StatelessWidget{
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed:() => context.go('/inicio'), 
+              onPressed:() => context.go('/Registro'), 
               child: const Text("ir a inicio ")
               )
           ],
