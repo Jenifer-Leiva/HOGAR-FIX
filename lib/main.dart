@@ -38,76 +38,76 @@ class MainApp extends StatelessWidget {
       routerConfig: GoRouter(initialLocation: '/Registro',routes: [
       GoRoute(
         path: '/Registro',
-        builder: (context, state) => Registro() ,
+        builder: (context, state) => const Registro() ,
         ),
 
 
         GoRoute(
         path: '/PerfilCliente',
-        builder: (context, state) => PerfilCliente() ,
+        builder: (context, state) => const PerfilCliente() ,
         ),
         GoRoute(
         path: '/EditarPerfilCliente',
-        builder: (context, state) => EditarPerfilCliente() ,
+        builder: (context, state) => const EditarPerfilCliente() ,
         ),
         GoRoute(
         path: '/InicioCliente',
-        builder: (context, state) => InicioCliente() ,
+        builder: (context, state) => const InicioCliente() ,
         ),
         GoRoute(
         path: '/ResultadosBusqueda',
-        builder: (context, state) => ResultadosBusqueda() ,
+        builder: (context, state) => const ResultadosBusqueda() ,
         ),
 
 
          GoRoute(
         path: '/PerfilProveedor',
-        builder: (context, state) => PerfilProveedor() ,
+        builder: (context, state) => const PerfilProveedor() ,
         ),
          GoRoute(
         path: '/EditarPerfilProveedor',
-        builder: (context, state) => EditarPerfilProveedor() ,
+        builder: (context, state) => const EditarPerfilProveedor() ,
         ),
          GoRoute(
         path: '/InicioProveedor',
-        builder: (context, state) => InicioProveedor() ,
+        builder: (context, state) => const InicioProveedor() ,
         ),
         GoRoute(
         path: '/DetallesProveedor',
-        builder: (context, state) => DetallesProveedor() ,
+        builder: (context, state) => const DetallesProveedor() ,
         ),
        
 
         GoRoute(
         path: '/ConfirmacionServicio',
-        builder: (context, state) => ConfirmacionServicio() ,
+        builder: (context, state) => const ConfirmacionServicio() ,
         ),
         GoRoute(
         path: '/Chat',
-        builder: (context, state) => Chat() ,
+        builder: (context, state) => const Chat() ,
         ),
         GoRoute(
         path: '/ProgresoServicio',
-        builder: (context, state) => ProgresoServicio() ,
+        builder: (context, state) => const ProgresoServicio() ,
         ),
         GoRoute(
         path: '/MonitoreoServicio',
-        builder: (context, state) => MonitoreoServicio() ,
+        builder: (context, state) => const MonitoreoServicio() ,
         ),
         GoRoute(
         path: '/Calificacion',
-        builder: (context, state) => Calificacion() ,
+        builder: (context, state) => const Calificacion() ,
         ),
 
 
          GoRoute(
         path: '/HistorialServicios',
-        builder: (context, state) => HistorialServicios() ,
+        builder: (context, state) => const HistorialServicios() ,
         ),
         GoRoute(
         path: '/Soporte',
-        builder: (context, state) => Soporte() ,
-        ),
+        builder: (context, state) => const Soporte() ,
+        )
       ]),
     );
   }
