@@ -67,6 +67,7 @@ class _InicioappState extends State<Inicioapp> {
               alignment: Alignment.centerRight,
               child: TextButton(
                 onPressed: () {
+                   Navigator.pushNamed(context, '/cambiocontraseña');
                   // Acción para "Olvidaste tu contraseña?"
                 },
                 child: const Text(

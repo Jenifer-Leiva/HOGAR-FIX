@@ -7,6 +7,7 @@ import 'package:hogarfixapp/firebase_options.dart';
 
 //paginas_cod
 import 'package:hogarfixapp/pages/Calificacion.dart';
+import 'package:hogarfixapp/pages/CambioContrase%C3%B1a.dart';
 import 'package:hogarfixapp/pages/Chat.dart';
 import 'package:hogarfixapp/pages/ConfirmacionServicio.dart';
 import 'package:hogarfixapp/pages/DetallesProveedor.dart';
@@ -39,6 +40,7 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       routes: {
         '/': (context) => const Inicioapp(),
+        '/cambiocontraseña': (context) => const CambioContrasenia(),
         '/registro': (context) => const Registro(),
         
         '/perfilcliente': (context) => const PerfilCliente(),
