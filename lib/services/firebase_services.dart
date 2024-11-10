@@ -5,13 +5,48 @@ FirebaseFirestore baseDatos = FirebaseFirestore.instance;
 Future<List> getProveedores() async {
   List proveedores = [];
 
-  CollectionReference collectionReferenceProveedores =
-      baseDatos.collection('Proveedores');
+  QuerySnapshot queryProveedores =
+      await baseDatos.collection('Proveedores').get();
 
-  QuerySnapshot queryProveedores = await collectionReferenceProveedores.get();
+  for (var doc in queryProveedores.docs) {
+    proveedores.add(doc.data());
+  }
 
-  queryProveedores.docs.forEach((documento) {
-    proveedores.add(documento.data());
-  });
   return proveedores;
+}
+
+Future<void> addUsuarios(
+    String nombre, String correo, String celular, String contrasena) async {
+  await baseDatos.collection("Proveedores").add({
+    "Nombre": nombre,
+    'Correo': correo,
+    'Celular': celular,
+    'Contraseña': contrasena,
+  });
+}
+//////////////////////////////////////////////////////////////////////////////////////
+
+FirebaseFirestore baseDatosClientes = FirebaseFirestore.instance;
+
+Future<List> getClientes() async {
+  List clientes = [];
+
+  QuerySnapshot queryclientes =
+      await baseDatosClientes.collection('Clientes').get();
+
+  for (var doc in queryclientes.docs) {
+    clientes.add(doc.data());
+  }
+
+  return clientes;
+}
+
+Future<void> addUsuariosClientes(
+    String nombre, String correo, String celular, String contrasena) async {
+  await baseDatosClientes.collection("Clientes").add({
+    "Nombre": nombre,
+    'Correo': correo,
+    'Celular': celular,
+    'Contraseña': contrasena, // Nuevo campo para almacenar la contraseña
+  });
 }

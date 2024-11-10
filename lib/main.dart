@@ -1,7 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:hogarfixapp/firebase_options.dart';
-import 'package:hogarfixapp/services/firebase_services.dart';
+
+//paginas_cod
+import 'package:hogarfixapp/Pages/add_Registro_page.dart';
+import 'package:hogarfixapp/Pages/home_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,34 +19,11 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Home(),
-    );
-  }
-}
-
-class Home extends StatefulWidget {
-  const Home({
-    super.key,
-  });
-
-  @override
-  State<Home> createState() => _HomeState();
-}
-
-class _HomeState extends State<Home> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: FutureBuilder(
-          future: getProveedores(),
-          builder: ((context, snapshot) {
-            return ListView.builder(
-                itemCount: snapshot.data?.length,
-                itemBuilder: (context, index) {
-                  return Text(snapshot.data?[index]['Nombre']);
-                });
-          })),
+    return MaterialApp(
+      routes: {
+        '/': (context) => const Home(),
+        '/add': (context) => const AddRegistro(),
+      },
     );
   }
 }
