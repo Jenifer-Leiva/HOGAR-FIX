@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 
-class Calificacion extends StatelessWidget{
-  const Calificacion({super.key});
+class CambioContrasenia extends StatelessWidget{
+  const CambioContrasenia({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Calificacion"),
+        title: const Text("CambioContraseña"),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed:() => Navigator.pushNamed(context, '/historialservicios'),
-              child: const Text("ir a HistorialServicios ")
+              onPressed:() => Navigator.pushNamed(context, '/'),
+              child: const Text("Cambiar contraseña ")
               )
           ],
         ),

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-
 class Chat extends StatelessWidget{
   const Chat({super.key});
 
