@@ -15,7 +15,7 @@ class Chat extends StatelessWidget{
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed:() => context.go('/ProgresoServicio'), 
+              onPressed:() => Navigator.pushNamed(context, '/progresoservicio'),
               child: const Text("ir a ProgresoServicio ")
               )
           ],

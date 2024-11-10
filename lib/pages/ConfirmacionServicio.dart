@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class ConfirmacionServicio extends StatelessWidget{
   const ConfirmacionServicio({super.key});
@@ -15,7 +14,7 @@ class ConfirmacionServicio extends StatelessWidget{
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed:() => context.go('/Chat'), 
+              onPressed:() => Navigator.pushNamed(context, '/chat'),
               child: const Text("ir a Chat ")
               )
           ],

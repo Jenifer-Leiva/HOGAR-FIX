@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class ProgresoServicio extends StatelessWidget{
   const ProgresoServicio({super.key});
@@ -15,7 +14,7 @@ class ProgresoServicio extends StatelessWidget{
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed:() => context.go('/MonitoreoServicio'), 
+              onPressed:() => Navigator.pushNamed(context, '/monitoreoservicio'),
               child: const Text("ir a MonitoreoServicio ")
               )
           ],

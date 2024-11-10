@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class MonitoreoServicio extends StatelessWidget{
   const MonitoreoServicio({super.key});
@@ -15,7 +14,7 @@ class MonitoreoServicio extends StatelessWidget{
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed:() => context.go('/Calificacion'), 
+              onPressed:() => Navigator.pushNamed(context, '/calificacion'),
               child: const Text("ir a Calificacion ")
               )
           ],

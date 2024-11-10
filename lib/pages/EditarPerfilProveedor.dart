@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class EditarPerfilProveedor extends StatelessWidget{
   const EditarPerfilProveedor({super.key});
@@ -15,7 +14,7 @@ class EditarPerfilProveedor extends StatelessWidget{
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed:() => context.go('/InicioProveedor'), 
+              onPressed:() => Navigator.pushNamed(context, '/inicioproveedor'),
               child: const Text("ir a InicioProveedor ")
               )
           ],

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class ResultadosBusqueda extends StatelessWidget{
   const ResultadosBusqueda({super.key});
@@ -15,7 +14,7 @@ class ResultadosBusqueda extends StatelessWidget{
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed:() => context.go('/ConfirmacionServicio'), 
+              onPressed:() => Navigator.pushNamed(context, '/confirmacionservicio'),
               child: const Text("ir a ConfirmacionServicio ")
               )
           ],

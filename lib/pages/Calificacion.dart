@@ -15,7 +15,7 @@ class Calificacion extends StatelessWidget{
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed:() => context.go('/HistorialServicios'), 
+              onPressed:() => Navigator.pushNamed(context, '/historialservicios'),
               child: const Text("ir a HistorialServicios ")
               )
           ],
