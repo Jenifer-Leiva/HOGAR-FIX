@@ -14,8 +14,8 @@ class ResultadosBusqueda extends StatelessWidget{
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed:() => Navigator.pushNamed(context, '/confirmacionservicio'),
-              child: const Text("ir a ConfirmacionServicio ")
+              onPressed:() => Navigator.pushNamed(context, '/detallesproveedor'),
+              child: const Text("ir a detallesproveedor ")
               )
           ],
         ),

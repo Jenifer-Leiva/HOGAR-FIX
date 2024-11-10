@@ -20,7 +20,7 @@ import 'package:hogarfixapp/pages/PerfilCliente.dart';
 import 'package:hogarfixapp/pages/PerfilProveedor.dart';
 import 'package:hogarfixapp/pages/ProgresoServicio.dart';
 import 'package:hogarfixapp/pages/Registro.dart';
-import 'package:hogarfixapp/pages/Inicioapp.dart';
+import 'package:hogarfixapp/pages/Login.dart';
 import 'package:hogarfixapp/pages/ResultadosBusqueda.dart';
 import 'package:hogarfixapp/pages/Soporte.dart';
 
@@ -39,7 +39,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       routes: {
-        '/': (context) => const Inicioapp(),
+        '/': (context) => const Login(),
         '/cambiocontraseña': (context) => const CambioContrasenia(),
         '/registro': (context) => const Registro(),
         
