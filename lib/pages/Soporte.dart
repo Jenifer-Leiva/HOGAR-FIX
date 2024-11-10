@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class Soporte extends StatelessWidget{
   const Soporte({super.key});
@@ -15,7 +14,7 @@ class Soporte extends StatelessWidget{
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed:() => context.go('/Registro'), 
+              onPressed:() => Navigator.pushNamed(context, '/'),
               child: const Text("ir a inicio ")
               )
           ],

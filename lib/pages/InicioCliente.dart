@@ -31,6 +31,7 @@ class _InicioClienteState extends State<InicioCliente> {
     {"name": "Sistemas de seguridad", "icon": Icons.security},
     {"name": "Redes y telecomunicaciones", "icon": Icons.wifi},
   ];
+  
 
   final ScrollController _scrollController = ScrollController();
 
@@ -136,8 +137,13 @@ class _InicioClienteState extends State<InicioCliente> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+
               Row(
                 children: [
+                  ElevatedButton(
+              onPressed:() => Navigator.pushNamed(context, '/resultadosbusqueda'),
+              child: const Text("ir a resultados de la busqueda ")
+              ),
                   IconButton(
                     icon: const Icon(Icons.arrow_back),
                     onPressed: () {

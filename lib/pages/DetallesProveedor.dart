@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-
 class DetallesProveedor extends StatelessWidget{
   const DetallesProveedor({super.key});
 
@@ -15,7 +13,7 @@ class DetallesProveedor extends StatelessWidget{
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed:() => context.go('/ConfirmacionServicio'), 
+              onPressed:() => Navigator.pushNamed(context, '/confirmacionservicio'),
               child: const Text("ir a ConfirmacionServicio ")
               )
           ],

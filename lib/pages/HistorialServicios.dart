@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class HistorialServicios extends StatelessWidget{
   const HistorialServicios({super.key});
@@ -15,7 +14,7 @@ class HistorialServicios extends StatelessWidget{
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed:() => context.go('/Soporte'), 
+              onPressed:() =>Navigator.pushNamed(context, '/soporte'),
               child: const Text("ir a Soporte ")
               )
           ],

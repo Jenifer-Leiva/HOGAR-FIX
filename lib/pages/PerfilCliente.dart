@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class PerfilCliente extends StatelessWidget{
   const PerfilCliente({super.key});
@@ -15,8 +14,8 @@ class PerfilCliente extends StatelessWidget{
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed:() => context.go('/EditarPerfilCliente'), 
-              child: const Text("ir a EditarPerfilCliente ")
+              onPressed:() => Navigator.pushNamed(context, '/editarperfilcliente'),
+              child: const Text("ir a editarperfilcliente ")
               )
           ],
         ),
