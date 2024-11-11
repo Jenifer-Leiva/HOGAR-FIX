@@ -24,7 +24,7 @@ class _ClientProfileState extends State<PerfilCliente> {
         Navigator.pushNamed(context, '/iniciocliente');
         break;
       case 1:
-        Navigator.pushNamed(context, '/historial');
+        Navigator.pushNamed(context, '/historialservicios');
         break;
       case 2:
         Navigator.pushNamed(context, '/perfilcliente');

@@ -7,7 +7,8 @@ import 'package:hogarfixapp/firebase_options.dart';
 
 //paginas_cod
 import 'package:hogarfixapp/pages/Calificacion.dart';
-import 'package:hogarfixapp/pages/CambioContrase%C3%B1a.dart';
+import 'package:hogarfixapp/pages/CambioContrasenia.dart';
+import 'package:hogarfixapp/pages/CancelacionServicio.dart';
 import 'package:hogarfixapp/pages/Chat.dart';
 import 'package:hogarfixapp/pages/ConfirmacionServicio.dart';
 import 'package:hogarfixapp/pages/DetallesProveedor.dart';
@@ -54,6 +55,7 @@ class MainApp extends StatelessWidget {
         '/detallesproveedor': (context) => const DetallesProveedor(),
 
         '/confirmacionservicio': (context) => const ConfirmacionServicio(),
+        '/cancelacionservicio': (context) => const CancelacionServicio(),
         '/chat': (context) => const Chat(),
         '/progresoservicio': (context) => const ProgresoServicio(),
         '/monitoreoservicio': (context) => const MonitoreoServicio(),
