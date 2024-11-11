@@ -28,6 +28,10 @@ class _RatingScreenState extends State<Calificacion> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            ElevatedButton(
+              onPressed:() => Navigator.pushNamed(context, '/resultadosbusqueda'),
+              child: const Text("ir a resultados busqueda servicio ")
+              ),
             const SizedBox(height: 20),
             _buildHeader(),
             const SizedBox(height: 20),
