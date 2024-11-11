@@ -56,7 +56,10 @@ class ServiceProviderHomePage extends StatelessWidget {
       body: Column(
         children: [
 
-
+ ElevatedButton(
+              onPressed:() => Navigator.pushNamed(context, '/monitoreoservicio'),
+              child: const Text("ir a monitoreoservicio ")
+              ),
           // Contenedor naranja para el texto "¡TIENES NUEVOS SERVICIOS POR ACEPTAR!"
           Container(
             width: double.infinity,
@@ -91,6 +94,7 @@ class ServiceProviderHomePage extends StatelessWidget {
           ),
         ],
       ),
+            
       // Barra de navegación inferior
       bottomNavigationBar: BottomNavigationBar(
         items: const [

@@ -10,7 +10,7 @@ class PerfilProveedor extends StatelessWidget {
         child: Column(
           children: [
              ElevatedButton(
-              onPressed:() => Navigator.pushNamed(context, '/inicioproveedor'),
+              onPressed:() => Navigator.pushNamed(context, '/monitoreoservicio'),
               child: const Text("ir a InicioProveedor ")
               ),
             // Sección de Foto de Perfil
