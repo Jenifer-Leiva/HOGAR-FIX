@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 class ResultadosBusqueda extends StatelessWidget {
   const ResultadosBusqueda({super.key});
 
@@ -12,9 +11,9 @@ class ResultadosBusqueda extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed:() => Navigator.pushNamed(context, '/progresoservicio'),
-              child: const Text("ir a progreso servicio ")
-              ),
+              onPressed: () => Navigator.pushNamed(context, '/progresoservicio'),
+              child: const Text("ir a progreso servicio "),
+            ),
             const Icon(Icons.location_on, color: Colors.black),
             const Text(
               "CL 00 #0a-00",
@@ -35,7 +34,7 @@ class ResultadosBusqueda extends StatelessWidget {
               child: ListView.builder(
                 itemCount: 3, // Número de proveedores en la lista de resultados
                 itemBuilder: (context, index) {
-                  return _buildProviderCard();
+                  return _buildProviderCard(context);
                 },
               ),
             ),
@@ -85,7 +84,7 @@ class ResultadosBusqueda extends StatelessWidget {
     );
   }
 
-  Widget _buildProviderCard() {
+  Widget _buildProviderCard(BuildContext context) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 10),
       shape: RoundedRectangleBorder(
@@ -144,7 +143,21 @@ class ResultadosBusqueda extends StatelessWidget {
                   ),
                 ),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/detallesproveedor');
+                  },
+                  child: const Text(
+                    "Ver detalles",
+                    style: TextStyle(
+                      color: Colors.orange,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/chat');
+                  },
                   child: const Text(
                     "Enviar mensaje",
                     style: TextStyle(

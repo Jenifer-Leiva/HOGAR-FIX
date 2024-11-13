@@ -10,10 +10,7 @@ class EditarPerfilCliente extends StatelessWidget{
       body: SingleChildScrollView(
         child: Column(
           children: [
-            ElevatedButton(
-              onPressed:() => Navigator.pushNamed(context, '/iniciocliente'),
-              child: const Text("ir a InicioCliente ")
-              ),
+            
             // Sección de Foto de Perfil
             Container(
               color: Colors.orange,
@@ -94,7 +91,7 @@ class EditarPerfilCliente extends StatelessWidget{
                 // Botón Guardar Información
                 Center(
                 child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {Navigator.pushNamed(context, '/perfilcliente');},
                 style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.orange,
                 foregroundColor: Colors.white,

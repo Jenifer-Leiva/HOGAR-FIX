@@ -1,7 +1,27 @@
 import 'package:flutter/material.dart';
 
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'App de Servicios',
+      initialRoute: '/',
+      routes: {
+        '/': (context) => ConfirmacionServicio(),
+        '/progresoservicio': (context) => ProgresoServicio(),
+        '/chat': (context) => Chat(), // Ruta de ejemplo para la pantalla de chat
+      },
+    );
+  }
+}
+
 class ConfirmacionServicio extends StatelessWidget {
   const ConfirmacionServicio({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -10,10 +30,6 @@ class ConfirmacionServicio extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ElevatedButton(
-              onPressed:() => Navigator.pushNamed(context, '/calificacion'),
-              child: const Text("ir a calificacion ")
-              ),
             const SizedBox(height: 5),
             IconButton(
               icon: const Icon(Icons.arrow_back),
@@ -24,14 +40,14 @@ class ConfirmacionServicio extends StatelessWidget {
             const SizedBox(height: 10),
             _buildHeader(),
             const SizedBox(height: 20),
-            _buildServiceDetails(),
+            _buildServiceDetails(context),
             const Spacer(),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Lógica para iniciar chat
+          Navigator.pushNamed(context, '/chat');
         },
         backgroundColor: Colors.orange,
         child: const Icon(Icons.chat),
@@ -79,7 +95,7 @@ class ConfirmacionServicio extends StatelessWidget {
     );
   }
 
-  Widget _buildServiceDetails() {
+  Widget _buildServiceDetails(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -136,10 +152,21 @@ class ConfirmacionServicio extends StatelessWidget {
             children: [
               ElevatedButton(
                 onPressed: () {
-                  // Lógica para volver
+                  Navigator.pushNamed(context, '/progresoservicio');
                 },
                 style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.orange, backgroundColor: Colors.white,
+                  backgroundColor: Colors.orange,
+                  foregroundColor: Colors.white,
+                ),
+                child: const Text("Iniciar servicio"),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.orange,
+                  backgroundColor: Colors.white,
                   side: const BorderSide(color: Colors.orange),
                   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   shape: RoundedRectangleBorder(
@@ -174,6 +201,25 @@ class ConfirmacionServicio extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+// Clases para las otras pantallas de ejemplo
+class ProgresoServicio extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(child: Text('Progreso del servicio')),
+    );
+  }
+}
+
+class Chat extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(child: Text('Chat con el proveedor')),
     );
   }
 }

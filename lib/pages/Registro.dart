@@ -149,6 +149,7 @@ class _RegistroState extends State<Registro> {
             const SizedBox(height: 20),
             TextButton(
               onPressed: () {
+                Navigator.pushNamed(context, '/');
                 // Acción para ir a Iniciar Sesión
               },
               child: const Text(
