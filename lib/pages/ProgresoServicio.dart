@@ -21,16 +21,13 @@ class _MonitoreoServicioState extends State<ProgresoServicio> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Monitoreo"),
+        title: const Text("Progreso del Servicio"),
         backgroundColor: Colors.orange,
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          ElevatedButton(
-              onPressed:() => Navigator.pushNamed(context, '/monitoreoservicio'),
-              child: const Text("ir a monitoreo servicio ")
-              ),
+          
           // Título de la sección
           Expanded(
             child: Center(
@@ -83,8 +80,11 @@ class _MonitoreoServicioState extends State<ProgresoServicio> {
                                     : Colors.grey),
                             onPressed: () {
                               setState(() {
+                               
                                 noIniciadoSelected = !noIniciadoSelected;
-                              });
+                              }
+                              );
+                               Navigator.pushNamed(context, '/monitoreoservicio');
                             },
                           ),
                           SizedBox(height: 16),
@@ -96,6 +96,7 @@ class _MonitoreoServicioState extends State<ProgresoServicio> {
                             onPressed: () {
                               setState(() {
                                 retrasadoSelected = !retrasadoSelected;
+                                
                               });
                             },
                           ),
@@ -210,23 +211,7 @@ class _MonitoreoServicioState extends State<ProgresoServicio> {
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Servicios',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history),
-            label: 'Historial',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Mi perfil',
-          ),
-        ],
-        selectedItemColor: Colors.orange,
-      ),
+      
     );
   }
 }

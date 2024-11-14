@@ -1,23 +1,5 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'App de Servicios',
-      initialRoute: '/',
-      routes: {
-        '/': (context) => ConfirmacionServicio(),
-        '/progresoservicio': (context) => ProgresoServicio(),
-        '/chat': (context) => Chat(), // Ruta de ejemplo para la pantalla de chat
-      },
-    );
-  }
-}
 
 class ConfirmacionServicio extends StatelessWidget {
   const ConfirmacionServicio({super.key});
@@ -45,32 +27,7 @@ class ConfirmacionServicio extends StatelessWidget {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, '/chat');
-        },
-        backgroundColor: Colors.orange,
-        child: const Icon(Icons.chat),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Servicios',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history),
-            label: 'Historial',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Mi perfil',
-          ),
-        ],
-        currentIndex: 1, // Indica que "Historial" está seleccionado
-        selectedItemColor: Colors.orange,
-        unselectedItemColor: Colors.grey,
-      ),
+      
     );
   }
 
@@ -205,21 +162,4 @@ class ConfirmacionServicio extends StatelessWidget {
   }
 }
 
-// Clases para las otras pantallas de ejemplo
-class ProgresoServicio extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(child: Text('Progreso del servicio')),
-    );
-  }
-}
 
-class Chat extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(child: Text('Chat con el proveedor')),
-    );
-  }
-}

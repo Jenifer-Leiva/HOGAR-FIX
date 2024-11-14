@@ -67,6 +67,7 @@ class EditarPerfilCliente extends StatelessWidget{
                   const SizedBox(height: 10),
                   TextButton(
                     onPressed: () {
+                      Navigator.pushNamed(context, '/cambiocontraseña');
                       // Acción para cambiar la contraseña
                     },
                     child: const Center(

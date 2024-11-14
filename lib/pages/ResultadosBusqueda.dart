@@ -7,15 +7,12 @@ class ResultadosBusqueda extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Row(
+        title: const Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton(
-              onPressed: () => Navigator.pushNamed(context, '/progresoservicio'),
-              child: const Text("ir a progreso servicio "),
-            ),
-            const Icon(Icons.location_on, color: Colors.black),
-            const Text(
+            
+            Icon(Icons.location_on, color: Colors.black),
+            Text(
               "CL 00 #0a-00",
               style: TextStyle(color: Colors.black),
             ),
@@ -133,7 +130,9 @@ class ResultadosBusqueda extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/confirmacionservicio');
+                  },
                   child: const Text(
                     "Pedir este servicio",
                     style: TextStyle(

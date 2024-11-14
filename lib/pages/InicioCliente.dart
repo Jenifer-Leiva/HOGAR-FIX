@@ -1,83 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:hogarfixapp/pages/HistorialServicios.dart';
-import 'package:hogarfixapp/pages/PerfilCliente.dart';
 import 'package:intl/intl.dart';
 
 class InicioCliente extends StatefulWidget {
   const InicioCliente({super.key});
 
- @override
-  _ClientProfileState createState() => _ClientProfileState();
+  @override
+  _PerfilClienteState createState() => _PerfilClienteState();
 }
 
-class _ClientProfileState extends State<InicioCliente> {
-  int _selectedIndex = 2;
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-
-    switch (index) {
-      case 0:
-        Navigator.pushReplacementNamed(context, '/iniciocliente');
-        break;
-      case 1:
-        Navigator.pushReplacementNamed(context, '/historialservicios');
-        break;
-      case 2:
-        Navigator.pushReplacementNamed(context, '/perfilcliente');
-        break;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: const [
-          InicioCliente(),
-          HistorialServicios(),
-          PerfilCliente(),
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_repair_service),
-            label: 'Servicios',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history),
-            label: 'Historial',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Mi perfil',
-          ),
-        ],
-        selectedItemColor: const Color.fromARGB(255, 255, 153, 0),
-        unselectedItemColor: Colors.grey,
-      ),
-    );
-  }
-}
-  @override
-  _InicioClienteState createState() => _InicioClienteState();
-
-
-class _InicioClienteState extends State<InicioCliente> {
-  int _selectedIndex = 0;
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
+class _PerfilClienteState extends State<InicioCliente> {
   final TextEditingController _searchController = TextEditingController();
   final List<Map<String, dynamic>> services = [
     {"name": "Electricidad", "icon": Icons.electrical_services},
@@ -189,7 +120,7 @@ class _InicioClienteState extends State<InicioCliente> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-               ElevatedButton(
+              ElevatedButton(
                 onPressed: () {
                   Navigator.pushNamed(context, '/resultadosbusqueda'); 
                 },
@@ -197,11 +128,10 @@ class _InicioClienteState extends State<InicioCliente> {
                   backgroundColor: Colors.orange,
                   foregroundColor: Colors.white,
                 ),
-                child: const Text(" buscar "),
+                child: const Text("Buscar"),
               ),
               Row(
                 children: [
-                 
                   IconButton(
                     icon: const Icon(Icons.arrow_back),
                     onPressed: () {
@@ -301,18 +231,58 @@ class _InicioClienteState extends State<InicioCliente> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home_repair_service), label: 'Servicios'),
-          BottomNavigationBarItem(icon: Icon(Icons.history), label: 'Historial'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Mi perfil'),
-        ],
-        selectedItemColor: const Color.fromARGB(255, 255, 153, 0),
-        unselectedItemColor: Colors.grey,
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _buildNavButton(
+              icon: Icons.home_repair_service,
+              label: 'Servicios',
+              onPressed: () {
+                Navigator.pushNamed(context, '/iniciocliente');
+              },
+            ),
+            _buildNavButton(
+              icon: Icons.history,
+              label: 'Historial',
+              onPressed: () {
+                Navigator.pushNamed(context, '/historialservicios');
+              },
+            ),
+            _buildNavButton(
+              icon: Icons.person,
+              label: 'Mi perfil',
+              onPressed: () {
+                Navigator.pushNamed(context, '/perfilcliente');
+              },
+            ),
+          ],
+        ),
       ),
-      
+    );
+  }
+
+  // Método para construir un botón de navegación con icono
+  Widget _buildNavButton({
+    required IconData icon,
+    required String label,
+    required VoidCallback onPressed,
+  }) {
+    return ElevatedButton.icon(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.orange,
+        elevation: 5, // Mayor elevación para hacerlo más prominente
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24), // Botones más grandes
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8), // Bordes menos redondeados
+        ),
+        minimumSize: const Size(80, 60),
+      ),
+      icon: Icon(icon),
+      label: Text(label, style: const TextStyle(fontSize: 12)),
     );
   }
 }
