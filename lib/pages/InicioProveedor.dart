@@ -1,18 +1,7 @@
 import 'package:flutter/material.dart';
 
 class InicioProveedor extends StatelessWidget {
-  const InicioProveedor({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: ServiceProviderHomePage(),
-    );
-  }
-}
-
-class ServiceProviderHomePage extends StatelessWidget {
-   ServiceProviderHomePage({super.key});
+  InicioProveedor({super.key});
 
   // Lista de datos simulados para las solicitudes de servicio
   final List<Map<String, String>> serviceRequests = [
@@ -55,11 +44,6 @@ class ServiceProviderHomePage extends StatelessWidget {
       ),
       body: Column(
         children: [
-
- ElevatedButton(
-              onPressed:() => Navigator.pushNamed(context, '/monitoreoservicio'),
-              child: const Text("ir a monitoreoservicio ")
-              ),
           // Contenedor naranja para el texto "¡TIENES NUEVOS SERVICIOS POR ACEPTAR!"
           Container(
             width: double.infinity,
@@ -94,26 +78,60 @@ class ServiceProviderHomePage extends StatelessWidget {
           ),
         ],
       ),
-            
+
       // Barra de navegación inferior
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_repair_service),
-            label: 'Servicios',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history),
-            label: 'Historial',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Mi perfil',
-          ),
-        ],
-        selectedItemColor: const Color.fromARGB(255, 255, 153, 0),
-        unselectedItemColor: Colors.grey,
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _buildNavButton(
+              icon: Icons.home_repair_service,
+              label: 'Servicios',
+              onPressed: () {
+                Navigator.pushNamed(context, '/inicioproveedor');
+              },
+            ),
+            _buildNavButton(
+              icon: Icons.history,
+              label: 'Historial',
+              onPressed: () {
+                Navigator.pushNamed(context, '/historialproveedor');
+              },
+            ),
+            _buildNavButton(
+              icon: Icons.person,
+              label: 'Mi perfil',
+              onPressed: () {
+                Navigator.pushNamed(context, '/perfilproveedor');
+              },
+            ),
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget _buildNavButton({
+    required IconData icon,
+    required String label,
+    required VoidCallback onPressed,
+  }) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        IconButton(
+          icon: Icon(icon, size: 28, color: Colors.orange),
+          onPressed: onPressed,
+        ),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 12,
+            color: Colors.orange,
+          ),
+        ),
+      ],
     );
   }
 }

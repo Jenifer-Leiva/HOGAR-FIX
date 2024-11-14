@@ -12,9 +12,9 @@ class CancelacionServicio extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ElevatedButton(
-              onPressed:() => Navigator.pushNamed(context, '/confirmacionservicio'),
-              child: const Text("ir a confirmacion servicio ")
-              ),
+              onPressed: () => Navigator.pushNamed(context, '/confirmacionservicio'),
+              child: const Text("ir a confirmacion servicio"),
+            ),
             const SizedBox(height: 5),
             IconButton(
               icon: const Icon(Icons.arrow_back),
@@ -30,7 +30,7 @@ class CancelacionServicio extends StatelessWidget {
             _buildOptionButton("Me equivoqué de servicio o fechas"),
             _buildOptionButton("No quiero decir"),
             const Spacer(),
-            _buildCancelButton(),
+            _buildCancelButton(context), // Pasar el contexto aquí
           ],
         ),
       ),
@@ -91,7 +91,7 @@ class CancelacionServicio extends StatelessWidget {
             ),
           ),
           onPressed: () {
-            // Aquí se puede añadir lógica al seleccionar la opción
+            // Lógica adicional para las opciones
           },
           child: Text(
             text,
@@ -107,7 +107,7 @@ class CancelacionServicio extends StatelessWidget {
     );
   }
 
-  Widget _buildCancelButton() {
+  Widget _buildCancelButton(BuildContext context) {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
@@ -118,7 +118,8 @@ class CancelacionServicio extends StatelessWidget {
           ),
         ),
         onPressed: () {
-          // Aquí se puede agregar la lógica para confirmar la cancelación
+          // Navegación al inicio o realizar una acción personalizada
+          Navigator.pushNamed(context, '/iniciocliente');
         },
         child: const Text(
           'Cancelar servicio',

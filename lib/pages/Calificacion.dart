@@ -28,10 +28,7 @@ class _RatingScreenState extends State<Calificacion> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ElevatedButton(
-              onPressed:() => Navigator.pushNamed(context, '/resultadosbusqueda'),
-              child: const Text("ir a resultados busqueda servicio ")
-              ),
+            
             const SizedBox(height: 20),
             _buildHeader(),
             const SizedBox(height: 20),
@@ -45,25 +42,6 @@ class _RatingScreenState extends State<Calificacion> {
             const Spacer(),
           ],
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Servicios',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history),
-            label: 'Historial',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Mi perfil',
-          ),
-        ],
-        currentIndex: 1, // Indica que "Historial" está seleccionado
-        selectedItemColor: Colors.orange,
-        unselectedItemColor: Colors.grey,
       ),
     );
   }

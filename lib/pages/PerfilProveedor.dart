@@ -1,72 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hogarfixapp/pages/HistorialServicios.dart';
-import 'package:hogarfixapp/pages/InicioProveedor.dart';
 
-class PerfilProveedor extends StatefulWidget {
+class PerfilProveedor extends StatelessWidget {
   const PerfilProveedor({super.key});
-
-  @override
-  _ProveeProfileState createState() => _ProveeProfileState();
-}
-
-class _ProveeProfileState extends State<PerfilProveedor> {
-  int _selectedIndex = 2;
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-
-    switch (index) {
-      case 0:
-        Navigator.pushReplacementNamed(context, '/inicioproveedor');
-        break;
-      case 1:
-        Navigator.pushReplacementNamed(context, '/historialservicios');
-        break;
-      case 2:
-        Navigator.pushReplacementNamed(context, '/perfilproveedor');
-        break;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: const [
-          InicioProveedor(),
-          HistorialServicios(),
-          PerfilClienteContent(),
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_repair_service),
-            label: 'Servicios',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history),
-            label: 'Historial',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Mi perfil',
-          ),
-        ],
-        selectedItemColor: Color.fromARGB(255, 255, 153, 0),
-        unselectedItemColor: Colors.grey,
-      ),
-    );
-  }
-}
-
-class PerfilClienteContent extends StatelessWidget {
-  const PerfilClienteContent({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -74,10 +9,7 @@ class PerfilClienteContent extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            ElevatedButton(
-              onPressed: () => Navigator.pushNamed(context, '/monitoreoservicio'),
-              child: const Text("ir a InicioProveedor"),
-            ),
+            // Sección de Foto de Perfil
             Container(
               color: Colors.orange,
               padding: const EdgeInsets.all(40),
@@ -92,11 +24,15 @@ class PerfilClienteContent extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
+
+            // Nombre del Proveedor
             const Text(
               "Nombre",
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 15),
+
+            // Sección de Información Personal
             Padding(
               padding: const EdgeInsets.all(10),
               child: Column(
@@ -105,27 +41,41 @@ class PerfilClienteContent extends StatelessWidget {
                   _buildSectionTitle("Información personal"),
                   const SizedBox(height: 10),
                   const Text("Correo\nDireccion\nCelular", style: TextStyle(color: Colors.black, fontSize: 20)),
+
+                  // Sección de Acerca del Servicio
                   _buildSectionTitle("Acerca de tu servicio"),
                   const Text("Servicio\nDescripcion", style: TextStyle(color: Colors.black, fontSize: 18)),
                   const SizedBox(height: 10),
+
+                  // Sección de Horarios
                   _buildSectionTitle("Tus horarios"),
                   const SizedBox(height: 10),
                   _buildDropdownTimeIntervals(),
+
+                  // Certificaciones
                   const SizedBox(height: 10),
                   _buildSectionTitle("Tus certificaciones"),
                   const Text("Hoja de vida"),
                   const Text("Certificación técnica"),
+
+                  // Precio
                   const SizedBox(height: 10),
                   _buildSectionTitle("Tu precio estimado"),
                   const Text("\$ --- por hora"),
+
                   const Divider(color: Colors.orange, thickness: 1),
+
+                  // Opciones adicionales
                   const SizedBox(height: 10),
                   const Text("Soporte", style: TextStyle(color: Colors.grey)),
                   const SizedBox(height: 5),
                   const Text("Cerrar sesión", style: TextStyle(color: Colors.grey)),
                   const SizedBox(height: 5),
                   const Text("Eliminar cuenta", style: TextStyle(color: Colors.grey)),
+
                   const SizedBox(height: 20),
+
+                  // Botón Editar Información
                   Center(
                     child: ElevatedButton(
                       onPressed: () {
@@ -145,9 +95,42 @@ class PerfilClienteContent extends StatelessWidget {
           ],
         ),
       ),
+
+      // Barra de navegación inferior
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _buildNavButton(
+              icon: Icons.home_repair_service,
+              label: 'Servicios',
+              onPressed: () {
+                Navigator.pushNamed(context, '/inicioproveedor');
+              },
+            ),
+            _buildNavButton(
+              icon: Icons.history,
+              label: 'Historial',
+              onPressed: () {
+                Navigator.pushNamed(context, '/historialproveedor');
+              },
+            ),
+            _buildNavButton(
+              icon: Icons.person,
+              label: 'Mi perfil',
+              onPressed: () {
+                Navigator.pushNamed(context, '/perfilproveedor');
+              },
+            ),
+        
+          ],
+        ),
+      ),
     );
   }
 
+  // Método auxiliar para construir títulos de sección
   Widget _buildSectionTitle(String title) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -171,6 +154,7 @@ class PerfilClienteContent extends StatelessWidget {
     );
   }
 
+  // Método para construir los desplegables de intervalos de horas para cada día
   Widget _buildDropdownTimeIntervals() {
     const timeIntervals = [
       "7:00 - 8:00 am",
@@ -219,31 +203,37 @@ class PerfilClienteContent extends StatelessWidget {
                         child: Text(interval),
                       );
                     }).toList(),
-                    onChanged: (value) {},
+                    onChanged: (value) {
+                      // Acción cuando se selecciona un intervalo
+                    },
                   ),
           ],
         );
       }).toList(),
     );
   }
-}
 
-class PlaceholderWidget extends StatelessWidget {
-  final Color color;
-  final String text;
-
-  const PlaceholderWidget({required this.color, required this.text, super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: color,
-      child: Center(
-        child: Text(
-          text,
-          style: const TextStyle(color: Colors.white, fontSize: 24),
+  // Método auxiliar para construir los botones de la barra de navegación inferior
+  Widget _buildNavButton({
+    required IconData icon,
+    required String label,
+    required VoidCallback onPressed,
+  }) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        IconButton(
+          icon: Icon(icon, size: 28, color: Colors.orange),
+          onPressed: onPressed,
         ),
-      ),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 12,
+            color: Colors.orange,
+          ),
+        ),
+      ],
     );
   }
 }

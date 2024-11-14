@@ -4,10 +4,10 @@ class ProgresoServicio extends StatefulWidget {
   const ProgresoServicio({super.key});
 
   @override
-  _MonitoreoServicioState createState() => _MonitoreoServicioState();
+  _ProgresoServicioState createState() => _ProgresoServicioState();
 }
 
-class _MonitoreoServicioState extends State<ProgresoServicio> {
+class _ProgresoServicioState extends State<ProgresoServicio> {
   // Variables para controlar el estado de cada botón
   bool noIniciadoSelected = false;
   bool retrasadoSelected = false;
@@ -21,16 +21,12 @@ class _MonitoreoServicioState extends State<ProgresoServicio> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Monitoreo"),
+        title: const Text("Progreso del Servicio"),
         backgroundColor: Colors.orange,
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          ElevatedButton(
-              onPressed:() => Navigator.pushNamed(context, '/monitoreoservicio'),
-              child: const Text("ir a monitoreo servicio ")
-              ),
           // Título de la sección
           Expanded(
             child: Center(
@@ -77,22 +73,27 @@ class _MonitoreoServicioState extends State<ProgresoServicio> {
                         children: [
                           // Botones circulares para los estados
                           IconButton(
-                            icon: Icon(Icons.radio_button_off,
-                                color: noIniciadoSelected
-                                    ? Colors.orange
-                                    : Colors.grey),
+                            icon: Icon(
+                              Icons.radio_button_off,
+                              color: noIniciadoSelected
+                                  ? Colors.orange
+                                  : Colors.grey,
+                            ),
                             onPressed: () {
                               setState(() {
                                 noIniciadoSelected = !noIniciadoSelected;
                               });
+                              Navigator.pushNamed(context, '/monitoreoservicio');
                             },
                           ),
                           SizedBox(height: 16),
                           IconButton(
-                            icon: Icon(Icons.radio_button_off,
-                                color: retrasadoSelected
-                                    ? Colors.orange
-                                    : Colors.grey),
+                            icon: Icon(
+                              Icons.radio_button_off,
+                              color: retrasadoSelected
+                                  ? Colors.orange
+                                  : Colors.grey,
+                            ),
                             onPressed: () {
                               setState(() {
                                 retrasadoSelected = !retrasadoSelected;
@@ -101,14 +102,17 @@ class _MonitoreoServicioState extends State<ProgresoServicio> {
                           ),
                           SizedBox(height: 16),
                           IconButton(
-                            icon: Icon(Icons.radio_button_off,
-                                color: completadoSelected
-                                    ? Colors.orange
-                                    : Colors.grey),
+                            icon: Icon(
+                              Icons.radio_button_off,
+                              color: completadoSelected
+                                  ? Colors.orange
+                                  : Colors.grey,
+                            ),
                             onPressed: () {
                               setState(() {
                                 completadoSelected = !completadoSelected;
                               });
+                              Navigator.pushNamed(context, '/calificacion');
                             },
                           ),
                         ],
@@ -118,10 +122,12 @@ class _MonitoreoServicioState extends State<ProgresoServicio> {
                         children: [
                           // Botones "X" para los estados
                           IconButton(
-                            icon: Icon(Icons.close,
-                                color: noIniciadoXSelected
-                                    ? Colors.orange
-                                    : Colors.grey),
+                            icon: Icon(
+                              Icons.close,
+                              color: noIniciadoXSelected
+                                  ? Colors.orange
+                                  : Colors.grey,
+                            ),
                             onPressed: () {
                               setState(() {
                                 noIniciadoXSelected = !noIniciadoXSelected;
@@ -130,10 +136,12 @@ class _MonitoreoServicioState extends State<ProgresoServicio> {
                           ),
                           SizedBox(height: 16),
                           IconButton(
-                            icon: Icon(Icons.close,
-                                color: retrasadoXSelected
-                                    ? Colors.orange
-                                    : Colors.grey),
+                            icon: Icon(
+                              Icons.close,
+                              color: retrasadoXSelected
+                                  ? Colors.orange
+                                  : Colors.grey,
+                            ),
                             onPressed: () {
                               setState(() {
                                 retrasadoXSelected = !retrasadoXSelected;
@@ -142,10 +150,12 @@ class _MonitoreoServicioState extends State<ProgresoServicio> {
                           ),
                           SizedBox(height: 16),
                           IconButton(
-                            icon: Icon(Icons.close,
-                                color: completadoXSelected
-                                    ? Colors.orange
-                                    : Colors.grey),
+                            icon: Icon(
+                              Icons.close,
+                              color: completadoXSelected
+                                  ? Colors.orange
+                                  : Colors.grey,
+                            ),
                             onPressed: () {
                               setState(() {
                                 completadoXSelected = !completadoXSelected;
@@ -210,23 +220,70 @@ class _MonitoreoServicioState extends State<ProgresoServicio> {
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Servicios',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history),
-            label: 'Historial',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Mi perfil',
-          ),
-        ],
-        selectedItemColor: Colors.orange,
+      // Barra de navegación inferior
+      // Barra de navegación inferior
+
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _buildNavButton(
+              icon: Icons.home_repair_service,
+              label: 'Servicios',
+              onPressed: () {
+                Navigator.pushNamed(context, '/iniciocliente');
+              },
+            ),
+            _buildNavButton(
+              icon: Icons.history,
+              label: 'Historial',
+              onPressed: () {
+                Navigator.pushNamed(context, '/historialcliente');
+              },
+            ),
+            _buildNavButton(
+              icon: Icons.person,
+              label: 'Mi perfil',
+              onPressed: () {
+                Navigator.pushNamed(context, '/perfilcliente');
+              },
+            ),
+            _buildNavButton(
+              icon: Icons.support_agent,
+              label: 'Soporte',
+              onPressed: () {
+                Navigator.pushNamed(context, '/soporte');
+              },
+            ),
+
+          ],
+        ),
       ),
+    );
+  }
+
+  // Método para construir los botones de navegación
+ Widget _buildNavButton({
+    required IconData icon,
+    required String label,
+    required VoidCallback onPressed,
+  }) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        IconButton(
+          icon: Icon(icon, size: 28, color: Colors.orange),
+          onPressed: onPressed,
+        ),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 12,
+            color: Colors.orange,
+          ),
+        ),
+      ],
     );
   }
 }

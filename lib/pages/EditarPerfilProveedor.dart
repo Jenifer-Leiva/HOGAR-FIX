@@ -109,25 +109,7 @@ class EditarPerfilProveedor extends StatelessWidget {
         ),
       ),
 
-      // Barra de navegación inferior
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_repair_service),
-            label: 'Servicios',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history),
-            label: 'Historial',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Mi perfil',
-          ),
-        ],
-        selectedItemColor: Colors.orange,
-        unselectedItemColor: Colors.grey,
-      ),
+     
     );
   }
 

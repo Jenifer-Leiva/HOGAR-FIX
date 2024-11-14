@@ -169,23 +169,66 @@ class Soporte extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Servicios',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history),
-            label: 'Historial',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Mi perfil',
-          ),
-        ],
-        selectedItemColor: Colors.orange,
+      // Barra de navegación inferior
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _buildNavButton(
+              icon: Icons.home_repair_service,
+              label: 'Servicios',
+              onPressed: () {
+                Navigator.pushNamed(context, '/iniciocliente');
+              },
+            ),
+            _buildNavButton(
+              icon: Icons.history,
+              label: 'Historial',
+              onPressed: () {
+                Navigator.pushNamed(context, '/historialcliente');
+              },
+            ),
+            _buildNavButton(
+              icon: Icons.person,
+              label: 'Mi perfil',
+              onPressed: () {
+                Navigator.pushNamed(context, '/perfilcliente');
+              },
+            ),
+            _buildNavButton(
+              icon: Icons.support_agent,
+              label: 'Soporte',
+              onPressed: () {
+                Navigator.pushNamed(context, '/soporte');
+              },
+            ),
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget _buildNavButton({
+    required IconData icon,
+    required String label,
+    required VoidCallback onPressed,
+  }) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        IconButton(
+          icon: Icon(icon, size: 28, color: Colors.orange),
+          onPressed: onPressed,
+        ),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 12,
+            color: Colors.orange,
+          ),
+        ),
+      ],
     );
   }
 }

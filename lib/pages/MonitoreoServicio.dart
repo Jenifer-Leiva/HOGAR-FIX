@@ -96,25 +96,7 @@ class MonitoreoServicio extends StatelessWidget {
           const Spacer(),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Servicios',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history),
-            label: 'Historial',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Mi perfil',
-          ),
-        ],
-        currentIndex: 1, // Indica que "Historial" está seleccionado
-        selectedItemColor: Colors.orange,
-        unselectedItemColor: Colors.grey,
-      ),
+      
     );
   }
 }

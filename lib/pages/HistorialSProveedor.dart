@@ -1,52 +1,7 @@
 import 'package:flutter/material.dart';
 
-
-class HistorialServicios extends StatelessWidget {
-  const HistorialServicios({super.key});
-  
-  BuildContext? get context => null;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed:() => Navigator.pushNamed(context, '/cancelacionservicio'),
-              child: const Text("ir a cancelacion servicio ")
-              ),
-            const SizedBox(height: 20),
-            _buildHeader(),
-            const SizedBox(height: 20),
-            _buildServiceHistory(),
-          ],
-        ),
-      ),
-
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Servicios',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history),
-            label: 'Historial',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Mi perfil',
-          ),
-        ],
-        currentIndex: 1, // El índice 1 indica que "Historial" está seleccionado
-        selectedItemColor: Colors.orange,
-        unselectedItemColor: Colors.grey,
-      ),
-    );
-  }
+class HistorialSProveedor extends StatelessWidget {
+  const HistorialSProveedor({super.key});
 
   Widget _buildHeader() {
     return Container(
@@ -68,13 +23,13 @@ class HistorialServicios extends StatelessWidget {
     );
   }
 
-  Widget _buildServiceHistory() {
+  Widget _buildServiceHistory(BuildContext context) {
     return Column(
-      children: List.generate(5, (index) => _buildServiceCard(index)),
+      children: List.generate(5, (index) => _buildServiceCard(context, index)),
     );
   }
 
-  Widget _buildServiceCard(int index) {
+  Widget _buildServiceCard(BuildContext context, int index) {
     bool inProgress = index == 0; // Solo el primer servicio está en proceso
     return Card(
       color: Colors.orange[200],
@@ -117,8 +72,7 @@ class HistorialServicios extends StatelessWidget {
                 if (inProgress)
                   GestureDetector(
                     onTap: () {
-                      // Aquí se puede agregar la lógica para cancelar el servicio
-                      ScaffoldMessenger.of(context!).showSnackBar(
+                      ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('Servicio cancelado')),
                       );
                     },
@@ -146,4 +100,92 @@ class HistorialServicios extends StatelessWidget {
       ),
     );
   }
+
+  Widget _buildNavButton({required IconData icon, required String label, required VoidCallback onPressed}) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        IconButton(
+          icon: Icon(icon),
+          onPressed: onPressed,
+        ),
+        Text(label),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Historial de Servicios"),
+        backgroundColor: Colors.orange,
+      ),
+      body: SingleChildScrollView(  // Se añadió para permitir desplazamiento
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            _buildHeader(),
+            const SizedBox(height: 16),
+            _buildServiceHistory(context),
+          ],
+        ),
+      ),
+      // Barra de navegación inferior
+
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _buildNavButton(
+              icon: Icons.home_repair_service,
+              label: 'Servicios',
+              onPressed: () {
+                Navigator.pushNamed(context, '/inicioproveedor');
+              },
+            ),
+            _buildNavButton(
+              icon: Icons.history,
+              label: 'Historial',
+              onPressed: () {
+                Navigator.pushNamed(context, '/historialproveedor');
+              },
+            ),
+            _buildNavButton(
+              icon: Icons.person,
+              label: 'Mi perfil',
+              onPressed: () {
+                Navigator.pushNamed(context, '/perfilproveedor');
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
+
+Widget _buildNavButton({
+    required IconData icon,
+    required String label,
+    required VoidCallback onPressed,
+  }) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        IconButton(
+          icon: Icon(icon, size: 28, color: Colors.orange),
+          onPressed: onPressed,
+        ),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 12,
+            color: Colors.orange,
+          ),
+        ),
+      ],
+    );
+  }
+
