@@ -3,63 +3,7 @@ import 'package:flutter/material.dart';
 class ResultadosBusqueda extends StatelessWidget {
   const ResultadosBusqueda({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            
-            Icon(Icons.location_on, color: Colors.black),
-            Text(
-              "CL 00 #0a-00",
-              style: TextStyle(color: Colors.black),
-            ),
-          ],
-        ),
-        centerTitle: true,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _buildHeader(),
-            const SizedBox(height: 20),
-            Expanded(
-              child: ListView.builder(
-                itemCount: 3, // Número de proveedores en la lista de resultados
-                itemBuilder: (context, index) {
-                  return _buildProviderCard(context);
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Servicios',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history),
-            label: 'Historial',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Mi perfil',
-          ),
-        ],
-        currentIndex: 0, // Indica que "Servicios" está seleccionado
-        selectedItemColor: Colors.orange,
-        unselectedItemColor: Colors.grey,
-      ),
-    );
-  }
-
+  // Método para construir el encabezado
   Widget _buildHeader() {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -81,6 +25,7 @@ class ResultadosBusqueda extends StatelessWidget {
     );
   }
 
+  // Método para construir la tarjeta del proveedor
   Widget _buildProviderCard(BuildContext context) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 10),
@@ -171,4 +116,101 @@ class ResultadosBusqueda extends StatelessWidget {
       ),
     );
   }
+
+  // Método para construir un botón de navegación con icono
+ 
+
+  // Método principal build que incluye el encabezado y las tarjetas
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Resultados de Búsqueda"),
+        backgroundColor: Colors.orange,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            _buildHeader(),
+            const SizedBox(height: 16),
+            Expanded(
+              child: ListView.builder(
+                itemCount: 5, // Número de tarjetas de proveedor
+                itemBuilder: (context, index) {
+                  return _buildProviderCard(context);
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+      // Barra de navegación inferior
+
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _buildNavButton(
+              icon: Icons.home_repair_service,
+              label: 'Servicios',
+              onPressed: () {
+                Navigator.pushNamed(context, '/iniciocliente');
+              },
+            ),
+            _buildNavButton(
+              icon: Icons.history,
+              label: 'Historial',
+              onPressed: () {
+                Navigator.pushNamed(context, '/historialcliente');
+              },
+            ),
+            _buildNavButton(
+              icon: Icons.person,
+              label: 'Mi perfil',
+              onPressed: () {
+                Navigator.pushNamed(context, '/perfilcliente');
+              },
+            ),
+            _buildNavButton(
+              icon: Icons.support_agent,
+              label: 'Soporte',
+              onPressed: () {
+                Navigator.pushNamed(context, '/soporte');
+              },
+            ),
+
+
+
+
+          ],
+        ),
+      ),
+    );
+  }
 }
+
+
+Widget _buildNavButton({
+    required IconData icon,
+    required String label,
+    required VoidCallback onPressed,
+  }) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        IconButton(
+          icon: Icon(icon, size: 28, color: Colors.orange),
+          onPressed: onPressed,
+        ),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 12,
+            color: Colors.orange,
+          ),
+        ),
+      ],
+    );
+  }

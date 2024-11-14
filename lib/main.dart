@@ -2,20 +2,28 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 import 'package:hogarfixapp/firebase_options.dart';
+import 'package:hogarfixapp/pages/Calificacion.dart';
 
 //paginas_cod
 import 'package:hogarfixapp/pages/CambioContrasenia.dart';
+import 'package:hogarfixapp/pages/CancelacionServicio.dart';
 import 'package:hogarfixapp/pages/Chat.dart';
 import 'package:hogarfixapp/pages/ConfirmacionServicio.dart';
 import 'package:hogarfixapp/pages/DetallesProveedor.dart';
 import 'package:hogarfixapp/pages/EditarPerfilCliente.dart';
+import 'package:hogarfixapp/pages/EditarPerfilProveedor.dart';
+import 'package:hogarfixapp/pages/HistorialSCliente.dart';
+import 'package:hogarfixapp/pages/HistorialSProveedor.dart';
 import 'package:hogarfixapp/pages/InicioCliente.dart';
+import 'package:hogarfixapp/pages/InicioProveedor.dart';
 import 'package:hogarfixapp/pages/Login.dart';
 import 'package:hogarfixapp/pages/MonitoreoServicio.dart';
 import 'package:hogarfixapp/pages/PerfilCliente.dart';
+import 'package:hogarfixapp/pages/PerfilProveedor.dart';
 import 'package:hogarfixapp/pages/ProgresoServicio.dart';
 import 'package:hogarfixapp/pages/Registro.dart';
 import 'package:hogarfixapp/pages/ResultadosBusqueda.dart';
+import 'package:hogarfixapp/pages/Soporte.dart';
 
 
 Future<void> main() async {
@@ -39,25 +47,26 @@ class MainApp extends StatelessWidget {
         
         '/perfilcliente': (context) => const PerfilCliente(),
         '/editarperfilcliente': (context) => const EditarPerfilCliente(),
-        '/iniciocliente': (context) =>  InicioCliente(),
+        '/iniciocliente': (context) =>  const InicioCliente(),
         '/resultadosbusqueda': (context) => const ResultadosBusqueda(),
         '/detallesproveedor': (context) => const DetallesProveedor(),
         '/confirmacionservicio': (context) => const ConfirmacionServicio(),
-        '/chat': (context) => Chat(),
+        '/chat': (context) => const Chat(),
 
-        '/progresoservicio': (context) => ProgresoServicio(),
-        //'/cancelacionservicio': (context) => const CancelacionServicio(),
+        '/progresoservicio': (context) => const ProgresoServicio(),
+        '/cancelacionservicio': (context) => const CancelacionServicio(),
         '/monitoreoservicio': (context) => const MonitoreoServicio(),
-        //'/calificacion': (context) => const Calificacion(),
+        '/calificacion': (context) => const Calificacion(),
 
-        //'/perfilproveedor': (context) => const PerfilProveedor(),
-       // '/editarperfilproveedor': (context) => const EditarPerfilProveedor(),
-       // '/inicioproveedor': (context) => const InicioProveedor(),
+        '/perfilproveedor': (context) => const PerfilProveedor(),
+        '/editarperfilproveedor': (context) => const EditarPerfilProveedor(),
+       '/inicioproveedor': (context) =>  InicioProveedor(),
         
         
   
-        //'/historialservicios': (context) => const HistorialServicios(),
-        //'/soporte': (context) => const Soporte(),
+        '/historialcliente': (context) => const HistorialSCliente(),
+        '/historialproveedor': (context) => const HistorialSProveedor(),
+        '/soporte': (context) => const Soporte(),
       },
     );
   }

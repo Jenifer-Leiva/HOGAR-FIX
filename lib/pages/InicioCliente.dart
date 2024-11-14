@@ -231,6 +231,8 @@ class _PerfilClienteState extends State<InicioCliente> {
           ),
         ),
       ),
+     // Barra de navegación inferior
+
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(12),
         child: Row(
@@ -247,7 +249,7 @@ class _PerfilClienteState extends State<InicioCliente> {
               icon: Icons.history,
               label: 'Historial',
               onPressed: () {
-                Navigator.pushNamed(context, '/historialservicios');
+                Navigator.pushNamed(context, '/historialcliente');
               },
             ),
             _buildNavButton(
@@ -257,6 +259,15 @@ class _PerfilClienteState extends State<InicioCliente> {
                 Navigator.pushNamed(context, '/perfilcliente');
               },
             ),
+            _buildNavButton(
+              icon: Icons.support_agent,
+              label: 'Soporte',
+              onPressed: () {
+                Navigator.pushNamed(context, '/soporte');
+              },
+            ),
+
+
           ],
         ),
       ),
@@ -264,25 +275,26 @@ class _PerfilClienteState extends State<InicioCliente> {
   }
 
   // Método para construir un botón de navegación con icono
-  Widget _buildNavButton({
+ Widget _buildNavButton({
     required IconData icon,
     required String label,
     required VoidCallback onPressed,
   }) {
-    return ElevatedButton.icon(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.orange,
-        elevation: 5, // Mayor elevación para hacerlo más prominente
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24), // Botones más grandes
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8), // Bordes menos redondeados
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        IconButton(
+          icon: Icon(icon, size: 28, color: Colors.orange),
+          onPressed: onPressed,
         ),
-        minimumSize: const Size(80, 60),
-      ),
-      icon: Icon(icon),
-      label: Text(label, style: const TextStyle(fontSize: 12)),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 12,
+            color: Colors.orange,
+          ),
+        ),
+      ],
     );
   }
 }

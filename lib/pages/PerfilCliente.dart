@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 class PerfilCliente extends StatelessWidget {
   const PerfilCliente({super.key});
 
@@ -41,12 +40,11 @@ class PerfilCliente extends StatelessWidget {
             const SizedBox(height: 15),
 
             const Divider(
-              color: Colors.orange, // Color de la línea
-              thickness: 1.5,       // Grosor de la línea
+              color: Colors.orange,
+              thickness: 1.5,
             ),
 
             // Sección de Soporte
-            _buildInfoRow("Soporte"),
             _buildInfoRow("Cerrar sesión"),
             _buildInfoRow("Eliminar cuenta"),
             const SizedBox(height: 20),
@@ -67,7 +65,7 @@ class PerfilCliente extends StatelessWidget {
         ),
       ),
 
-      // Barra de navegación inferior
+      // Barra de navegación inferior con Soporte a la derecha de Mi perfil
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(12),
         child: Row(
@@ -84,7 +82,7 @@ class PerfilCliente extends StatelessWidget {
               icon: Icons.history,
               label: 'Historial',
               onPressed: () {
-                Navigator.pushNamed(context, '/historialservicios');
+                Navigator.pushNamed(context, '/historialcliente');
               },
             ),
             _buildNavButton(
@@ -92,6 +90,13 @@ class PerfilCliente extends StatelessWidget {
               label: 'Mi perfil',
               onPressed: () {
                 Navigator.pushNamed(context, '/perfilcliente');
+              },
+            ),
+            _buildNavButton(
+              icon: Icons.support_agent,
+              label: 'Soporte',
+              onPressed: () {
+                Navigator.pushNamed(context, '/soporte');
               },
             ),
           ],
@@ -142,34 +147,27 @@ class PerfilCliente extends StatelessWidget {
     );
   }
 
-  // Método para construir un botón de navegación con icono
+  // Método para construir un botón de navegación con icono y texto debajo
   Widget _buildNavButton({
     required IconData icon,
     required String label,
     required VoidCallback onPressed,
   }) {
-    return ElevatedButton.icon(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.orange,
-        elevation: 5, // Mayor elevación para hacerlo más prominente
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24), // Botones más grandes
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8), // Bordes menos redondeados
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        IconButton(
+          icon: Icon(icon, size: 28, color: Colors.orange),
+          onPressed: onPressed,
         ),
-        minimumSize: const Size(100, 50), // Tamaño mínimo de los botones
-      ),
-      icon: Icon(
-        icon,
-        size: 28, // Iconos más grandes
-      ),
-      label: Text(
-        label,
-        style: const TextStyle(
-          fontSize: 14, // Fuente un poco más grande
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 12,
+            color: Colors.orange,
+          ),
         ),
-      ),
+      ],
     );
   }
 }
