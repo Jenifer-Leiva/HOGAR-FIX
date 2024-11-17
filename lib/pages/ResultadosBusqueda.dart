@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class ResultadosBusqueda extends StatelessWidget {
@@ -26,7 +27,7 @@ class ResultadosBusqueda extends StatelessWidget {
   }
 
   // Método para construir la tarjeta del proveedor
-  Widget _buildProviderCard(BuildContext context) {
+  Widget _buildProviderCard(BuildContext context, String providerName) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 10),
       shape: RoundedRectangleBorder(
@@ -42,9 +43,9 @@ class ResultadosBusqueda extends StatelessWidget {
               children: [
                 const Icon(Icons.photo_camera, color: Colors.grey),
                 const SizedBox(width: 8),
-                const Text(
-                  "Nombre del proveedor",
-                  style: TextStyle(
+                Text(
+                  providerName, // Aquí se muestra el nombre del proveedor
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -63,6 +64,11 @@ class ResultadosBusqueda extends StatelessWidget {
             const SizedBox(height: 8),
             const Text(
               "Se encuentra a 0km de ti!",
+              style: TextStyle(color: Colors.black54),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              "dia y hora!",
               style: TextStyle(color: Colors.black54),
             ),
             const SizedBox(height: 4),
@@ -117,36 +123,60 @@ class ResultadosBusqueda extends StatelessWidget {
     );
   }
 
-  // Método para construir un botón de navegación con icono
- 
-
-  // Método principal build que incluye el encabezado y las tarjetas
   @override
   Widget build(BuildContext context) {
+
+    //////////////de inicio
+    final Map<String, dynamic>? selectedServiceDetails =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    final String selectedService = selectedServiceDetails?['service'] ?? 'Ninguno';
+
+
+
+
+
+
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Resultados de Búsqueda"),
         backgroundColor: Colors.orange,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            _buildHeader(),
-            const SizedBox(height: 16),
-            Expanded(
-              child: ListView.builder(
-                itemCount: 5, // Número de tarjetas de proveedor
+        child: FutureBuilder<QuerySnapshot>(
+          future: FirebaseFirestore.instance
+              .collection('Proveedores')
+              .where('Servicio', isEqualTo: selectedService)
+              .get(), // Realiza la consulta
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (snapshot.hasError) {
+              return const Center(child: Text("Error al cargar datos"));
+            }
+            if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+              return ListView.builder(
+                itemCount: snapshot.data!.docs.length,
                 itemBuilder: (context, index) {
-                  return _buildProviderCard(context);
+                  var providerData = snapshot.data!.docs[index];
+                  String providerName = providerData['Nombre']; // Nombre del proveedor
+                  return _buildProviderCard(context, providerName);
                 },
-              ),
-            ),
-          ],
+              );
+            } else {
+              return const Center(child: Text("No se encontraron proveedores"));
+            }
+          },
         ),
       ),
-      // Barra de navegación inferior
-
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(12),
         child: Row(
@@ -180,10 +210,6 @@ class ResultadosBusqueda extends StatelessWidget {
                 Navigator.pushNamed(context, '/soporte');
               },
             ),
-
-
-
-
           ],
         ),
       ),
@@ -191,26 +217,25 @@ class ResultadosBusqueda extends StatelessWidget {
   }
 }
 
-
 Widget _buildNavButton({
-    required IconData icon,
-    required String label,
-    required VoidCallback onPressed,
-  }) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        IconButton(
-          icon: Icon(icon, size: 28, color: Colors.orange),
-          onPressed: onPressed,
+  required IconData icon,
+  required String label,
+  required VoidCallback onPressed,
+}) {
+  return Column(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      IconButton(
+        icon: Icon(icon, size: 28, color: Colors.orange),
+        onPressed: onPressed,
+      ),
+      Text(
+        label,
+        style: const TextStyle(
+          fontSize: 12,
+          color: Colors.orange,
         ),
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 12,
-            color: Colors.orange,
-          ),
-        ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
+}

@@ -54,7 +54,7 @@ class HistorialSProveedor extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Nombre proveedor',
+                  'Nombre Cliente',
                   style: TextStyle(
                     color: Colors.grey[800],
                     fontSize: 14,

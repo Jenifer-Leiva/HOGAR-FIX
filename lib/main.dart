@@ -1,10 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-
 import 'package:hogarfixapp/firebase_options.dart';
-import 'package:hogarfixapp/pages/Calificacion.dart';
+
 
 //paginas_cod
+import 'package:hogarfixapp/pages/Calificacion.dart';
 import 'package:hogarfixapp/pages/CambioContrasenia.dart';
 import 'package:hogarfixapp/pages/CancelacionServicio.dart';
 import 'package:hogarfixapp/pages/Chat.dart';
@@ -59,7 +59,7 @@ class MainApp extends StatelessWidget {
         '/calificacion': (context) => const Calificacion(),
 
         '/perfilproveedor': (context) => const PerfilProveedor(),
-        '/editarperfilproveedor': (context) => const EditarPerfilProveedor(),
+        '/editarperfilproveedor': (context) =>  EditarPerfilProveedor(),
        '/inicioproveedor': (context) =>  InicioProveedor(),
         
         

@@ -50,3 +50,31 @@ Future<void> addUsuariosClientes(
     'Contraseña': contrasena, // Nuevo campo para almacenar la contraseña
   });
 }
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+FirebaseFirestore baseDatosServicios = FirebaseFirestore.instance;
+
+Future<List> getServicios() async {
+  List Servicios = [];
+
+  QuerySnapshot queryservicios =
+      await baseDatosServicios.collection('Servicios').get();
+
+  for (var doc in queryservicios.docs) {
+    Servicios.add(doc.data());
+  }
+
+  return Servicios;
+}
+
+Future<void> addServicios(
+    String servicio, String fecha, String estado, String proveedor,String cliente) async {
+  await baseDatosServicios.collection("Servicios").add({
+    "Servicio": servicio,
+    'Fecha': fecha,
+    'Estado': estado,
+    'Proveedor': proveedor,
+    'Cliente': cliente, // Nuevo campo para almacenar la contraseña
+  });
+}
