@@ -117,16 +117,6 @@ Future<void> _savePreferences() async {
 }
 
   
-
-
-
-
-
-
-
-
-
-
   // Método para mostrar un diálogo de confirmación
   void _showDeleteConfirmationDialog() {
     showDialog(
@@ -154,6 +144,10 @@ Future<void> _savePreferences() async {
       },
     );
   }
+
+
+  
+
 
   @override
   Widget build(BuildContext context) {

@@ -1,33 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ResultadosBusqueda extends StatelessWidget {
   const ResultadosBusqueda({super.key});
 
-  // Método para construir el encabezado
-  Widget _buildHeader() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.orange,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: const Center(
-        child: Text(
-          '¡ESTOS SON LOS SERVICIOS QUE TENEMOS PARA TI!',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-    );
-  }
-
   // Método para construir la tarjeta del proveedor
-  Widget _buildProviderCard(BuildContext context, String providerName) {
+  Widget _buildProviderCard(
+      BuildContext context, String providerName, String diasYHoras, double price) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 10),
       shape: RoundedRectangleBorder(
@@ -44,10 +24,8 @@ class ResultadosBusqueda extends StatelessWidget {
                 const Icon(Icons.photo_camera, color: Colors.grey),
                 const SizedBox(width: 8),
                 Text(
-                  providerName, // Aquí se muestra el nombre del proveedor
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  providerName,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 const Spacer(),
                 Row(
@@ -62,57 +40,55 @@ class ResultadosBusqueda extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 8),
-            const Text(
-              "Se encuentra a 0km de ti!",
-              style: TextStyle(color: Colors.black54),
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              "dia y hora!",
-              style: TextStyle(color: Colors.black54),
-            ),
+            Text(
+  "Horarios:\n ${diasYHoras.toString()}",
+  style: const TextStyle(color: Colors.black54),
+),
+            
             const SizedBox(height: 4),
-            const Text(
-              "\$--",
-              style: TextStyle(color: Colors.black54),
+            Text(
+              "precio: \$${price.toStringAsFixed(2)}",
+              style: const TextStyle(color: Colors.black54),
             ),
             const SizedBox(height: 8),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 TextButton(
-                  onPressed: () {
+                  onPressed: () async {
+                    final userId = providerName;  // Utilizamos el nombre como el userId del proveedor
+                    await _guardarUserIdEnSharedPrefs(userId);  // Guardamos el userId
                     Navigator.pushNamed(context, '/confirmacionservicio');
                   },
                   child: const Text(
                     "Pedir este servicio",
-                    style: TextStyle(
-                      color: Colors.orange,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold),
                   ),
                 ),
                 TextButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/detallesproveedor');
-                  },
-                  child: const Text(
-                    "Ver detalles",
-                    style: TextStyle(
-                      color: Colors.orange,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
+  onPressed: () async {
+    final userId = providerName;  // Utilizamos el nombre como el userId del proveedor
+    await _guardarUserIdEnSharedPrefs(userId);  // Guardamos el userId
+    Navigator.pushNamed(
+      context, 
+      '/detallesproveedor', 
+      arguments: userId,  // Pasamos el userId como argumento
+    );
+  },
+  child: const Text(
+    "Ver detalles",
+    style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold),
+  ),
+),
                 TextButton(
-                  onPressed: () {
+                  onPressed: () async {
+                    final userId = providerName;  // Utilizamos el nombre como el userId del proveedor
+                    await _guardarUserIdEnSharedPrefs(userId);  // Guardamos el userId
                     Navigator.pushNamed(context, '/chat');
                   },
                   child: const Text(
                     "Enviar mensaje",
-                    style: TextStyle(
-                      color: Colors.black,
-                    ),
+                    style: TextStyle(color: Colors.black),
                   ),
                 ),
               ],
@@ -123,19 +99,89 @@ class ResultadosBusqueda extends StatelessWidget {
     );
   }
 
+  // Método para obtener proveedores según el servicio seleccionado
+  Future<List<Map<String, dynamic>>> _getProveedoresPorServicio(String service) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('Proveedores')
+          .where('Servicio', isEqualTo: service)
+          .get();
+
+      return querySnapshot.docs.map((doc) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        return {
+          'Nombre': data['Nombre'] ?? 'Sin nombre',
+          'Precio': data['Precio'] ?? 0.0,
+          'UserId': doc.id,  // Obtenemos el ID del documento en Firestore como el userId
+        };
+      }).toList();
+    } catch (e) {
+      print("Error al obtener proveedores: $e");
+      return [];
+    }
+  }
+
+  // Método para obtener datos de SharedPreferences (precio, horarios)
+  Future<Map<String, dynamic>> _getProviderDataFromSharedPrefs(String userId) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  String? selectedService = prefs.getString('${userId}_selectedService');
+  String? precio = prefs.getString('${userId}_precio');
+
+  // Crear un mapa para almacenar los días y sus horarios
+  Map<String, String> diasYHoras = {};
+  List<String> dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+
+  // Obtener los horarios por cada día
+ for (String dia in dias) {
+    String? hora = prefs.getString('${userId}_$dia');
+    if (hora != null && hora.isNotEmpty) {
+      diasYHoras[dia] = hora;  // Solo agregamos días con horario disponible
+    }
+  }
+
+  return {
+    'Servicio': selectedService ?? 'Ninguno',
+    'Precio': double.parse(precio ?? '0.0'),
+    'Horarios': diasYHoras,  // Devolver todos los días y horarios
+  };
+}
+  // Método para guardar el userId en SharedPreferences
+  Future<void> _guardarUserIdEnSharedPrefs(String userId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('userId', userId);  // Guardamos el userId del proveedor
+  }
+
+  // Método para construir el botón de la barra de navegación inferior
+  Widget _buildNavButton({
+    required IconData icon,
+    required String label,
+    required VoidCallback onPressed,
+  }) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        IconButton(
+          icon: Icon(icon, size: 28, color: Colors.orange),
+          onPressed: onPressed,
+        ),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 12,
+            color: Colors.orange,
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-
-    //////////////de inicio
     final Map<String, dynamic>? selectedServiceDetails =
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+
     final String selectedService = selectedServiceDetails?['service'] ?? 'Ninguno';
-
-
-
-
-
-
 
     return Scaffold(
       appBar: AppBar(
@@ -150,30 +196,58 @@ class ResultadosBusqueda extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: FutureBuilder<QuerySnapshot>(
-          future: FirebaseFirestore.instance
-              .collection('Proveedores')
-              .where('Servicio', isEqualTo: selectedService)
-              .get(), // Realiza la consulta
+        child: FutureBuilder<List<Map<String, dynamic>>>(  // FutureBuilder para obtener los proveedores
+          future: _getProveedoresPorServicio(selectedService),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             }
             if (snapshot.hasError) {
-              return const Center(child: Text("Error al cargar datos"));
+              return const Center(child: Text("Error al cargar los datos"));
             }
-            if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
-              return ListView.builder(
-                itemCount: snapshot.data!.docs.length,
-                itemBuilder: (context, index) {
-                  var providerData = snapshot.data!.docs[index];
-                  String providerName = providerData['Nombre']; // Nombre del proveedor
-                  return _buildProviderCard(context, providerName);
-                },
-              );
-            } else {
-              return const Center(child: Text("No se encontraron proveedores"));
+
+            final proveedores = snapshot.data ?? [];
+            if (proveedores.isEmpty) {
+              return const Center(child: Text("No se encontraron proveedores para este servicio."));
             }
+
+            return ListView.builder(
+              itemCount: proveedores.length,
+              itemBuilder: (context, index) {
+                final proveedor = proveedores[index];
+                final userId = proveedor['UserId'] as String;  // Obtenemos el userId del proveedor (doc.id de Firestore)
+
+                return FutureBuilder<Map<String, dynamic>>(
+                  future: _getProviderDataFromSharedPrefs(userId),
+                  builder: (context, prefsSnapshot) {
+                    if (prefsSnapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (prefsSnapshot.hasError) {
+                      return const Center(child: Text("Error al cargar los datos del proveedor"));
+                    }
+
+                    final providerData = prefsSnapshot.data ?? {};
+final providerPrice = providerData['Precio'] as double;
+final providerDayAndTime = providerData['Horarios'] as Map<String, String>? ?? {}; // Asignar un mapa vacío si es null
+
+// Si 'Horarios' está presente y tiene el tipo correcto, entonces procesamos los días y horas.
+String formattedSchedule = providerDayAndTime.entries.map((entry) {
+  return "${entry.key}: ${entry.value}";  // Combina el día y la hora
+}).join(' , ');  // Une los horarios con saltos de línea
+
+return _buildProviderCard(
+  context,
+  proveedor['Nombre'] as String,
+  formattedSchedule,
+  providerPrice,  // Utilizamos el precio desde SharedPreferences
+    // Pasamos el horario formateado a la tarjeta
+);
+
+                  },
+                );
+              },
+            );
           },
         ),
       ),
@@ -215,27 +289,4 @@ class ResultadosBusqueda extends StatelessWidget {
       ),
     );
   }
-}
-
-Widget _buildNavButton({
-  required IconData icon,
-  required String label,
-  required VoidCallback onPressed,
-}) {
-  return Column(
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      IconButton(
-        icon: Icon(icon, size: 28, color: Colors.orange),
-        onPressed: onPressed,
-      ),
-      Text(
-        label,
-        style: const TextStyle(
-          fontSize: 12,
-          color: Colors.orange,
-        ),
-      ),
-    ],
-  );
 }
