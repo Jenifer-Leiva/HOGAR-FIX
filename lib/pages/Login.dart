@@ -71,8 +71,11 @@ class _LoginState extends State<Login> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     
     // Guardar el userId y userType en SharedPreferences
-    await prefs.setString('userId', userId);
-    await prefs.setString('userType', userType);
+  if (userType == 'Proveedor') {
+  await prefs.setString('providerUserId', userId);
+} else if (userType == 'Cliente') {
+  await prefs.setString('userIdCliente', userId);
+}
 
     if (userType == 'Proveedor') {
       // Si es un proveedor, obtenemos datos adicionales de la colección 'Proveedores'

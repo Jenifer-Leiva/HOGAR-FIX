@@ -7,7 +7,7 @@ class ResultadosBusqueda extends StatelessWidget {
 
   // Método para construir la tarjeta del proveedor
   Widget _buildProviderCard(
-      BuildContext context, String providerName, String diasYHoras, double price) {
+      BuildContext context, String providerName, String diasYHoras, double price,  dynamic providerUserId, ) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 10),
       shape: RoundedRectangleBorder(
@@ -54,25 +54,60 @@ class ResultadosBusqueda extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                TextButton(
-                  onPressed: () async {
-                    final userId = providerName;  // Utilizamos el nombre como el userId del proveedor
-                    await _guardarUserIdEnSharedPrefs(userId);  // Guardamos el userId
-                    Navigator.pushNamed(context, '/confirmacionservicio');
-                  },
-                  child: const Text(
-                    "Pedir este servicio",
-                    style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                TextButton(
+ TextButton(
   onPressed: () async {
-    final userId = providerName;  // Utilizamos el nombre como el userId del proveedor
-    await _guardarUserIdEnSharedPrefs(userId);  // Guardamos el userId
+    // Mostrar un Snackbar de espera
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("Esperando respuesta del proveedor..."),
+        duration: Duration(seconds: 3),  // Duración del mensaje
+      ),
+    );
+
+    // Obtener el userId del cliente
+    String userIdCliente = await _getUserIdCliente();
+    
+    // Guardar el providerUserId en SharedPreferences
+    final providerUserId = providerName;  // Utilizamos el nombre como el userId del proveedor
+    await _guardarUserIdEnSharedPrefs(providerUserId);  // Guardamos el userId del proveedor
+    
+    // Guardar el userId del cliente en una lista en SharedPreferences
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    
+    // Recuperar la lista de userIds ya almacenados
+    List<String> userIds = prefs.getStringList('userIdsCliente') ?? [];
+    
+    // Si no existe el userId del cliente en la lista, lo agregamos
+    if (!userIds.contains(userIdCliente)) {
+      userIds.add(userIdCliente);
+    }
+    
+    // Guardamos la lista actualizada de userIds
+    await prefs.setStringList('userIdsCliente', userIds);
+
+    // Navegar a la pantalla de inicio del cliente sin pasar la información directamente
+    Navigator.pushNamed(
+      context, 
+      '/iniciocliente',  // Solo navegas al inicio del cliente
+    );
+  },
+  child: const Text(
+    "Pedir este servicio",
+    style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold),
+  ),
+),
+
+
+
+
+                
+     TextButton(
+  onPressed: () async {
+    
     Navigator.pushNamed(
       context, 
       '/detallesproveedor', 
-      arguments: userId,  // Pasamos el userId como argumento
+      arguments: providerUserId,  // Pasamos el userId como argumento
     );
   },
   child: const Text(
@@ -80,10 +115,20 @@ class ResultadosBusqueda extends StatelessWidget {
     style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold),
   ),
 ),
+
+
+
+
+
+
+
+
+
+
                 TextButton(
                   onPressed: () async {
-                    final userId = providerName;  // Utilizamos el nombre como el userId del proveedor
-                    await _guardarUserIdEnSharedPrefs(userId);  // Guardamos el userId
+                    final providerUserId = providerName;  // Utilizamos el nombre como el userId del proveedor
+                    await _guardarUserIdEnSharedPrefs(providerUserId);  // Guardamos el userId
                     Navigator.pushNamed(context, '/chat');
                   },
                   child: const Text(
@@ -112,7 +157,7 @@ class ResultadosBusqueda extends StatelessWidget {
         return {
           'Nombre': data['Nombre'] ?? 'Sin nombre',
           'Precio': data['Precio'] ?? 0.0,
-          'UserId': doc.id,  // Obtenemos el ID del documento en Firestore como el userId
+          'providerUserId': doc.id,  // Obtenemos el ID del documento en Firestore como el userId
         };
       }).toList();
     } catch (e) {
@@ -122,11 +167,11 @@ class ResultadosBusqueda extends StatelessWidget {
   }
 
   // Método para obtener datos de SharedPreferences (precio, horarios)
-  Future<Map<String, dynamic>> _getProviderDataFromSharedPrefs(String userId) async {
+  Future<Map<String, dynamic>> _getProviderDataFromSharedPrefs(String providerUserId) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
 
-  String? selectedService = prefs.getString('${userId}_selectedService');
-  String? precio = prefs.getString('${userId}_precio');
+  String? selectedService = prefs.getString('${providerUserId}_selectedService');
+  String? precio = prefs.getString('${providerUserId}_precio');
 
   // Crear un mapa para almacenar los días y sus horarios
   Map<String, String> diasYHoras = {};
@@ -134,7 +179,7 @@ class ResultadosBusqueda extends StatelessWidget {
 
   // Obtener los horarios por cada día
  for (String dia in dias) {
-    String? hora = prefs.getString('${userId}_$dia');
+    String? hora = prefs.getString('${providerUserId}_$dia');
     if (hora != null && hora.isNotEmpty) {
       diasYHoras[dia] = hora;  // Solo agregamos días con horario disponible
     }
@@ -147,10 +192,30 @@ class ResultadosBusqueda extends StatelessWidget {
   };
 }
   // Método para guardar el userId en SharedPreferences
-  Future<void> _guardarUserIdEnSharedPrefs(String userId) async {
+  Future<void> _guardarUserIdEnSharedPrefs(String providerUserId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('userId', userId);  // Guardamos el userId del proveedor
+    prefs.setString('providerUserId', providerUserId);  // Guardamos el userId del proveedor
   }
+
+// Método para guardar el userId  cliente en SharedPreferences
+Future<String> _getUserIdCliente() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getString('userIdCliente') ?? '';  // Devuelve un string vacío si no se encuentra
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   // Método para construir el botón de la barra de navegación inferior
   Widget _buildNavButton({
@@ -215,10 +280,10 @@ class ResultadosBusqueda extends StatelessWidget {
               itemCount: proveedores.length,
               itemBuilder: (context, index) {
                 final proveedor = proveedores[index];
-                final userId = proveedor['UserId'] as String;  // Obtenemos el userId del proveedor (doc.id de Firestore)
+                final providerUserId = proveedor['providerUserId'] as String;  // Obtenemos el userId del proveedor (doc.id de Firestore)
 
                 return FutureBuilder<Map<String, dynamic>>(
-                  future: _getProviderDataFromSharedPrefs(userId),
+                  future: _getProviderDataFromSharedPrefs(providerUserId),
                   builder: (context, prefsSnapshot) {
                     if (prefsSnapshot.connectionState == ConnectionState.waiting) {
                       return const Center(child: CircularProgressIndicator());
@@ -240,7 +305,8 @@ return _buildProviderCard(
   context,
   proveedor['Nombre'] as String,
   formattedSchedule,
-  providerPrice,  // Utilizamos el precio desde SharedPreferences
+  providerPrice, 
+  providerUserId, // Utilizamos el precio desde SharedPreferences
     // Pasamos el horario formateado a la tarjeta
 );
 

@@ -39,19 +39,19 @@ String? precio = '';
   SharedPreferences prefs = await SharedPreferences.getInstance();
   SharedPreferences userPrefs = await SharedPreferences.getInstance();
   
-  String? userId = prefs.getString('userId');
+  String? providerUserId = prefs.getString('providerUserId');
   
-  if (userId != null) {
+  if (providerUserId != null) {
     setState(() {
-      selectedService = userPrefs.getString('${userId}_selectedService');
+      selectedService = userPrefs.getString('${providerUserId}_selectedService');
       // Cargar horarios por cada día con el userId como prefijo
       selectedTimes = Map.fromIterable(
         ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'],
         key: (day) => day,
-        value: (day) => userPrefs.getString('${userId}_$day'),
+        value: (day) => userPrefs.getString('${providerUserId}_$day'),
       );
       // Cargar el precio guardado
-      precio = userPrefs.getString('${userId}_precio') ?? ''; 
+      precio = userPrefs.getString('${providerUserId}_precio') ?? ''; 
       _precioController.text = precio ?? ''; // Asigna el valor del precio al controller del TextField
     });
   }
@@ -63,21 +63,21 @@ Future<void> _savePreferences() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   SharedPreferences userPrefs = await SharedPreferences.getInstance();
   
-  String? userId = prefs.getString('userId');
+  String? providerUserId = prefs.getString('providerUserId');
   
-  if (userId != null) {
+  if (providerUserId != null) {
     if (selectedService != null && selectedService!.isNotEmpty) {
-      userPrefs.setString('${userId}_selectedService', selectedService!);
+      userPrefs.setString('${providerUserId}_selectedService', selectedService!);
     }
     selectedTimes.forEach((day, time) {
       if (time != null && time.isNotEmpty) {
-        userPrefs.setString('${userId}_$day', time!);
+        userPrefs.setString('${providerUserId}_$day', time);
       }
     });
 
     // Guardar el precio solo si se ha ingresado un valor
     if (precio != null && precio!.isNotEmpty) {
-      userPrefs.setString('${userId}_precio', precio!); // Guardar el precio en SharedPreferences
+      userPrefs.setString('${providerUserId}_precio', precio!); // Guardar el precio en SharedPreferences
     }
   }
 }
@@ -88,22 +88,22 @@ Future<void> _savePreferences() async {
  Future<void> _deleteUser() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   SharedPreferences userPrefs = await SharedPreferences.getInstance();
-  String? userId = prefs.getString('userId');
+  String? providerUserId = prefs.getString('providerUserId');
   
-  if (userId != null) {
+  if (providerUserId != null) {
     try {
       // Eliminar el documento en Firestore
       await FirebaseFirestore.instance
           .collection('Proveedores')
-          .doc(userId)
+          .doc(providerUserId)
           .delete();
       
       // Eliminar preferencias del usuario
-      userPrefs.remove('${userId}_selectedService');
+      userPrefs.remove('${providerUserId}_selectedService');
       selectedTimes.forEach((day, _) {
-        userPrefs.remove('${userId}_$day');
+        userPrefs.remove('${providerUserId}_$day');
       });
-      userPrefs.remove('${userId}_precio');
+      userPrefs.remove('${providerUserId}_precio');
       prefs.remove('userId'); // Eliminar el userId de SharedPreferences
 
       Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false); // Redirigir al inicio
@@ -313,12 +313,12 @@ ElevatedButton(
 
   Future<DocumentSnapshot> _fetchUserData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? userId = prefs.getString('userId');
+    String? providerUserId = prefs.getString('providerUserId');
 
-    if (userId != null) {
+    if (providerUserId != null) {
       return await FirebaseFirestore.instance
           .collection('Proveedores')
-          .doc(userId)
+          .doc(providerUserId)
           .get();
     } else {
       throw Exception("No se encontró el userId.");
@@ -357,13 +357,13 @@ ElevatedButton(
 
     // Actualizar Firebase solo si el valor es válido
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? userId = prefs.getString('userId');
+    String? providerUserId = prefs.getString('providerUserId');
     
-    if (userId != null) {
+    if (providerUserId != null) {
       try {
         await FirebaseFirestore.instance
             .collection('Proveedores')
-            .doc(userId)
+            .doc(providerUserId)
             .update({'Servicio': newValue}); // Actualiza el campo "servicio"
         print('Servicio actualizado en la base de datos');
       } catch (e) {
@@ -467,11 +467,11 @@ Widget _buildDocumentUploadSection(String label, String? currentUrl) {
 
               // Guardar la URL del archivo en Firestore
               SharedPreferences prefs = await SharedPreferences.getInstance();
-              String? userId = prefs.getString('userId');
-              if (userId != null) {
+              String? providerUserId = prefs.getString('providerUserId');
+              if (providerUserId != null) {
                 FirebaseFirestore.instance
                     .collection('Proveedores')
-                    .doc(userId)
+                    .doc(providerUserId)
                     .update({
                   label == "Hoja de vida" ? "HojaDeVidaUrl" : "CertificacionUrl": downloadUrl
                 });

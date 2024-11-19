@@ -20,12 +20,12 @@ class _PerfilClienteState extends State<PerfilCliente> {
 
   Future<Map<String, dynamic>?> _fetchUserData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? userId = prefs.getString('userId');
+    String? userIdCliente = prefs.getString('userIdCliente');
     
-    if (userId != null) {
+    if (userIdCliente != null) {
       DocumentSnapshot userDoc = await FirebaseFirestore.instance
           .collection('Clientes')
-          .doc(userId)
+          .doc(userIdCliente)
           .get();
       if (userDoc.exists) {
         return userDoc.data() as Map<String, dynamic>?;
@@ -37,13 +37,13 @@ class _PerfilClienteState extends State<PerfilCliente> {
   // Método para eliminar el usuario
   Future<void> _deleteUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? userId = prefs.getString('userId');
+    String? userIdCliente = prefs.getString('userIdCliente');
     
-    if (userId != null) {
+    if (userIdCliente != null) {
       try {
         await FirebaseFirestore.instance
             .collection('Clientes')
-            .doc(userId)
+            .doc(userIdCliente)
             .delete(); // Elimina el documento de la base de datos
         prefs.remove('userId'); // Opcionalmente, puedes eliminar el userId guardado en SharedPreferences
         Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false); // Redirige al inicio
@@ -164,9 +164,10 @@ class _PerfilClienteState extends State<PerfilCliente> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
+            
             _buildNavButton(
               icon: Icons.home_repair_service,
-              label: 'Servicios',
+              label: 'servicios',
               onPressed: () {
                 Navigator.pushNamed(context, '/iniciocliente');
               },

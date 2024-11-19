@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class InicioCliente extends StatefulWidget {
   const InicioCliente({super.key});
@@ -37,6 +38,7 @@ class _InicioClienteState extends State<InicioCliente> {
   Set<String> selectedDays = {};
   Map<String, String> selectedTimes = {};
   String? selectedService;
+  String? userIdCliente;
 
   @override
   void initState() {
@@ -44,6 +46,17 @@ class _InicioClienteState extends State<InicioCliente> {
     filteredServices = services;
     _searchController.addListener(_filterServices);
   }
+
+
+ Future<void> _fetchUserId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userIdCliente = prefs.getString('userIdCliente');
+    });
+  }
+
+
+
 
   void _filterServices() {
     setState(() {
@@ -151,11 +164,15 @@ class _InicioClienteState extends State<InicioCliente> {
         'times': selectedTimes,
       };
 
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text('Datos de Busqueda'),
-          content: Text('Servicio: $selectedService\nDías: ${selectedDays.join(", ")}\nHorarios: ${selectedTimes.values.join(", ")}'),
+     showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Datos de Búsqueda'),
+        content: Text(
+          'Servicio: $selectedService\n'
+          'Días: ${selectedDays.join(", ")}\n'
+          'Horarios: ${selectedTimes.values.join(", ")}\n'
+        ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pushNamed(context, '/resultadosbusqueda', arguments: selectedServiceDetails,),
