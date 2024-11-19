@@ -126,6 +126,33 @@ class HistorialSCliente extends StatelessWidget {
 
   // Builds each service card for provider details
   Widget _buildServiceCard(BuildContext context, String providerName, String providerUserId, String serviceId) {
+      return FutureBuilder<DocumentSnapshot>(
+    future: FirebaseFirestore.instance
+        .collection('Servicios')
+        .doc(serviceId)
+        .get(), // Obtener el documento del servicio por ID
+    builder: (context, snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return const Center(child: CircularProgressIndicator());
+      }
+
+      if (snapshot.hasError || !snapshot.hasData || !snapshot.data!.exists) {
+        return Text('Error al cargar el servicio o no encontrado');
+      }
+
+      // Leer los datos del servicio
+      final serviceData = snapshot.data!.data() as Map<String, dynamic>;
+      final String estado = serviceData['estado'] ?? 'Sin estado';
+
+      // Ocultar el botón si el estado es "no iniciado", "retrasado" o "completado"
+      final bool showConfirmButton = !(estado == 'no iniciado' || estado == 'retrasado' || estado == 'completado');
+    
+    
+    
+    
+    
+    
+    
     return Card(
       color: Colors.orange[200],
       shape: RoundedRectangleBorder(
@@ -170,32 +197,34 @@ class HistorialSCliente extends StatelessWidget {
               ),
             ),
             // Espacio para el botón a la derecha
-            Expanded(
-              flex: 2, // Hace que el botón ocupe menos espacio
-              child: Align(
-                alignment: Alignment.centerRight, // Alinea el botón a la derecha
-                child: TextButton(
-                  onPressed: () {
-                    // Aquí puedes agregar la lógica para confirmar el servicio
-                    Navigator.pushNamed(
-                      context, 
-                      '/confirmacionservicio', 
-                      arguments: serviceId,  // Pass the serviceId to the confirmation screen
-                    ); // Llamar a la función de confirmación
-                  },
+              if (showConfirmButton)
+                Expanded(
+                  flex: 2,
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.pushNamed(
+                          context,
+                          '/confirmacionservicio',
+                          arguments: serviceId, // Pasar el ID del servicio
+                        );
+                      },
                   style: TextButton.styleFrom(
                     backgroundColor: Colors.orange, // Color de fondo para el botón
                     foregroundColor: Colors.white, // Color del texto
                   ),
                   child: const Text('Confirmar servicio'),
                 ),
-              ),
-            ),
-          ],
+                  ),
+                ),
+            ],
+          ),
         ),
-      ),
-    );
-  }
+      );
+    },
+  );
+}
 
   // Builds navigation buttons for the bottom navigation bar
   Widget _buildNavButton({

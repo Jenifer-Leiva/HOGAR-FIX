@@ -150,6 +150,7 @@ class _ProgresoServicioState extends State<ProgresoServicio> {
                             setState(() {
                               completadoSelected = !completadoSelected;
                                _updateServiceStatus("completado");
+                               
                             });
                             Navigator.pushNamed(context, '/calificacion');
                           },

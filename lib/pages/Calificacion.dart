@@ -14,11 +14,16 @@ class _RatingScreenState extends State<Calificacion> {
   final TextEditingController _commentController = TextEditingController();
 
   void _submitRating() {
-    final comment = _commentController.text;
-    print("Calificación: $_rating");
-    print("Comentario: $comment");
-    // Aquí puedes agregar lógica para enviar la calificación al backend.
-  }
+  final comment = _commentController.text;
+
+  print("Calificación: $_rating");
+  print("Comentario: $comment");
+
+  // Aquí puedes agregar lógica para enviar la calificación al backend.
+
+  // Redirigir al historial del cliente
+  Navigator.pushNamed(context, '/historialcliente');
+}
 
   @override
   Widget build(BuildContext context) {
