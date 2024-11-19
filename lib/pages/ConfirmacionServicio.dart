@@ -1,10 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ConfirmacionServicio extends StatelessWidget {
   const ConfirmacionServicio({super.key});
 
+  // Función para obtener los detalles del servicio y proveedor
+  Future<Map<String, String>> _fetchServiceDetails(String serviceId) async {
+    try {
+      // Recuperar el documento del servicio basado en el serviceId
+      final serviceSnapshot = await FirebaseFirestore.instance
+          .collection('Servicios')
+          .doc(serviceId)
+          .get();
+
+      if (serviceSnapshot.exists) {
+        // Obtener providerUserId y otros detalles del servicio
+        String providerUserId = serviceSnapshot['proveedor'];
+       
+
+        // Obtener el nombre del proveedor
+        final providerSnapshot = await FirebaseFirestore.instance
+            .collection('Proveedores')
+            .doc(providerUserId)
+            .get();
+
+        String providerName = providerSnapshot.exists
+            ? providerSnapshot['Nombre']
+            : 'Proveedor no encontrado';
+
+        // Devolver todos los detalles del servicio y proveedor
+        return {
+          'providerName': providerName,
+          'serviceId': serviceId,
+        };
+      } else {
+        return {}; // Si no existe el documento del servicio
+      }
+    } catch (e) {
+      return {}; // Error al obtener los detalles
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    // Obtener el serviceId del argumento enviado
+    final String serviceId = ModalRoute.of(context)?.settings.arguments as String;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Confirmación de Servicio"),
@@ -12,26 +53,37 @@ class ConfirmacionServicio extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 5),
-            IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-            const SizedBox(height: 10),
-            _buildHeader(),
-            const SizedBox(height: 20),
-            _buildServiceDetails(context),
-            const Spacer(),
-          ],
+        child: FutureBuilder<Map<String, String>>(
+          future: _fetchServiceDetails(serviceId),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator()); // Indicador de carga
+            }
+
+            if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            }
+
+            if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return Center(child: Text('No se encontraron detalles del servicio'));
+            }
+
+            final serviceDetails = snapshot.data!;
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 10),
+                _buildHeader(),
+                const SizedBox(height: 20),
+                _buildServiceDetails(context, serviceDetails),
+                const Spacer(),
+              ],
+            );
+          },
         ),
       ),
-       // Barra de navegación inferior
-
+      // Barra de navegación inferior
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(12),
         child: Row(
@@ -65,7 +117,6 @@ class ConfirmacionServicio extends StatelessWidget {
                 Navigator.pushNamed(context, '/soporte');
               },
             ),
-
           ],
         ),
       ),
@@ -93,7 +144,7 @@ class ConfirmacionServicio extends StatelessWidget {
     );
   }
 
-  Widget _buildServiceDetails(BuildContext context) {
+  Widget _buildServiceDetails(BuildContext context, Map<String, String> serviceDetails) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -103,12 +154,12 @@ class ConfirmacionServicio extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
+          Row(
             children: [
               Icon(Icons.person, color: Colors.black),
               SizedBox(width: 8),
               Text(
-                'Nombre del proveedor',
+                serviceDetails['providerName']!,
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -116,68 +167,91 @@ class ConfirmacionServicio extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 8),
-          const Text('Tipo de servicio', style: TextStyle(fontSize: 16)),
-          const SizedBox(height: 8),
-          const Text('El proveedor llegará el dd/mm/aa', style: TextStyle(fontSize: 16)),
-          const SizedBox(height: 8),
-          const Text('La franja horaria elegida fue de 00:00 a 00:00', style: TextStyle(fontSize: 16)),
-          const SizedBox(height: 8),
-          const Text('El precio estimado por hora es de \$--', style: TextStyle(fontSize: 16)),
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
+          Text('Tipo de servicio: ${serviceDetails['tipoServicio']}', style: TextStyle(fontSize: 16)),
+          SizedBox(height: 8),
+          Text('ID del servicio: ${serviceDetails['serviceId']}', style: TextStyle(fontSize: 16)),
+          SizedBox(height: 8),
+          Text('Fecha del servicio: ${serviceDetails['fechaServicio']}', style: TextStyle(fontSize: 16)),
+          SizedBox(height: 8),
+          Text('La franja horaria elegida fue de ${serviceDetails['horaServicio']}', style: TextStyle(fontSize: 16)),
+          SizedBox(height: 8),
+          Text('El precio estimado por hora es de \$--', style: TextStyle(fontSize: 16)),
+          SizedBox(height: 8),
           const Text(
             'Recuerda que esto es un estimado, el precio puede variar dependiendo de la consideración del proveedor. Si tienes dudas respecto al precio final, por favor contacta al proveedor.',
             style: TextStyle(fontSize: 14, color: Colors.orange),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/progresoservicio');
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.orange,
-                  foregroundColor: Colors.white,
-                ),
-                child: const Text("Iniciar servicio"),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.orange,
-                  backgroundColor: Colors.white,
-                  side: const BorderSide(color: Colors.orange),
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                child: const Text(
-                  'Volver',
-                  style: TextStyle(fontSize: 16),
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/cancelacionservicio');
-                  // Lógica para cancelar
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.orange,
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                child: const Text(
-                  'Cancelar',
-                  style: TextStyle(fontSize: 16, color: Colors.white),
-                ),
-              ),
+  onPressed: () async {
+    try {
+      // Actualizar el estado a "en progreso" en la colección "Servicios"
+      await FirebaseFirestore.instance
+          .collection('Servicios')
+          .doc(serviceDetails['serviceId'])
+          .update({
+        'estado': 'en progreso',
+      });
+
+      // Navegar a la pantalla de progreso del servicio y pasar el serviceId
+      Navigator.pushNamed(
+        context,
+        '/progresoservicio',
+        arguments: serviceDetails['serviceId'],  // Pasamos el serviceId
+      );
+    } catch (e) {
+      // Mostrar un mensaje de error si la actualización falla
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error al iniciar el servicio: $e')),
+      );
+    }
+  },
+  style: ElevatedButton.styleFrom(
+    backgroundColor: Colors.orange,
+    foregroundColor: Colors.white,
+  ),
+  child: const Text("Iniciar servicio"),
+),
+             ElevatedButton(
+  onPressed: () async {
+    try {
+      // Eliminar el servicio de la colección "Servicios"
+      await FirebaseFirestore.instance
+          .collection('Servicios')
+          .doc(serviceDetails['serviceId'])
+          .delete();
+
+      // Mostrar un mensaje de éxito
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Servicio cancelado correctamente')),
+      );
+
+      // Navegar a la pantalla inicial o cualquier otra que consideres
+      Navigator.pushNamed(context, '/iniciocliente');
+    } catch (e) {
+      // Mostrar un mensaje de error si la eliminación falla
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error al cancelar el servicio: $e')),
+      );
+    }
+  },
+  style: ElevatedButton.styleFrom(
+    backgroundColor: Colors.orange,
+    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(8),
+    ),
+  ),
+  child: const Text(
+    'Cancelar',
+    style: TextStyle(fontSize: 16, color: Colors.white),
+  ),
+),
+
             ],
           ),
         ],
@@ -185,8 +259,7 @@ class ConfirmacionServicio extends StatelessWidget {
     );
   }
 
-  // Método para construir un botón de navegación con icono
- Widget _buildNavButton({
+  Widget _buildNavButton({
     required IconData icon,
     required String label,
     required VoidCallback onPressed,

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class ProgresoServicio extends StatefulWidget {
@@ -8,14 +9,40 @@ class ProgresoServicio extends StatefulWidget {
 }
 
 class _ProgresoServicioState extends State<ProgresoServicio> {
-  // Variables para controlar el estado de cada botón
+  late String serviceId; // Variable para almacenar el serviceId
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Obtener el serviceId desde los argumentos de la ruta
+    final args = ModalRoute.of(context)?.settings.arguments as String?;
+    if (args != null) {
+      serviceId = args; // Asignar el serviceId recibido
+    }
+  }
+
+// Función para actualizar el estado del servicio en Firestore
+  Future<void> _updateServiceStatus(String status) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('Servicios')
+          .doc(serviceId)
+          .update({'estado': status}); // Actualizar el estado en Firestore
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Estado del servicio actualizado a: $status')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error al actualizar el estado: $e')),
+      );
+    }
+  }
+
+
+// Variables para controlar el estado de cada botón
   bool noIniciadoSelected = false;
   bool retrasadoSelected = false;
   bool completadoSelected = false;
-
-  bool noIniciadoXSelected = false;
-  bool retrasadoXSelected = false;
-  bool completadoXSelected = false;
 
   @override
   Widget build(BuildContext context) {
@@ -25,21 +52,23 @@ class _ProgresoServicioState extends State<ProgresoServicio> {
         backgroundColor: Colors.orange,
       ),
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Título de la sección
-          Expanded(
+          // Título de la sección (Reducir el espacio)
+          Padding(
+            padding: const EdgeInsets.only(top: 120.0),
             child: Center(
               child: Text(
-                "Servicio en curso",
+                "Servicio en curso $serviceId",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),
           ),
 
           // Estado del trabajo
-          Expanded(
+          Padding(
+            padding: const EdgeInsets.all(16.0),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   "Estado del trabajo",
@@ -50,179 +79,91 @@ class _ProgresoServicioState extends State<ProgresoServicio> {
                   ),
                 ),
                 Divider(color: Colors.orange, thickness: 1),
-                SizedBox(height: 8),
+                SizedBox(height: 16),
 
                 // Tabla de estado
-                Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("No iniciado", style: TextStyle(fontSize: 16)),
-                          SizedBox(height: 16),
-                          Text("Retrasado", style: TextStyle(fontSize: 16)),
-                          SizedBox(height: 16),
-                          Text("Completado", style: TextStyle(fontSize: 16)),
-                        ],
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          // Botones circulares para los estados
-                          IconButton(
-                            icon: Icon(
-                              Icons.radio_button_off,
-                              color: noIniciadoSelected
-                                  ? Colors.orange
-                                  : Colors.grey,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                noIniciadoSelected = !noIniciadoSelected;
-                              });
-                              Navigator.pushNamed(context, '/monitoreoservicio');
-                            },
-                          ),
-                          SizedBox(height: 16),
-                          IconButton(
-                            icon: Icon(
-                              Icons.radio_button_off,
-                              color: retrasadoSelected
-                                  ? Colors.orange
-                                  : Colors.grey,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                retrasadoSelected = !retrasadoSelected;
-                              });
-                            },
-                          ),
-                          SizedBox(height: 16),
-                          IconButton(
-                            icon: Icon(
-                              Icons.radio_button_off,
-                              color: completadoSelected
-                                  ? Colors.orange
-                                  : Colors.grey,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                completadoSelected = !completadoSelected;
-                              });
-                              Navigator.pushNamed(context, '/calificacion');
-                            },
-                          ),
-                        ],
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          // Botones "X" para los estados
-                          IconButton(
-                            icon: Icon(
-                              Icons.close,
-                              color: noIniciadoXSelected
-                                  ? Colors.orange
-                                  : Colors.grey,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                noIniciadoXSelected = !noIniciadoXSelected;
-                              });
-                            },
-                          ),
-                          SizedBox(height: 16),
-                          IconButton(
-                            icon: Icon(
-                              Icons.close,
-                              color: retrasadoXSelected
-                                  ? Colors.orange
-                                  : Colors.grey,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                retrasadoXSelected = !retrasadoXSelected;
-                              });
-                            },
-                          ),
-                          SizedBox(height: 16),
-                          IconButton(
-                            icon: Icon(
-                              Icons.close,
-                              color: completadoXSelected
-                                  ? Colors.orange
-                                  : Colors.grey,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                completadoXSelected = !completadoXSelected;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          // Pregunta de utilidad
-          Expanded(
-            child: Center(
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 12.0),
-                decoration: BoxDecoration(
-                  color: Colors.orange.shade100,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    Text(
-                      "¿El servicio fue de utilidad?",
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    Column(
                       children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            // Acción al presionar "Sí"
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.orange,
-                          ),
-                          child: Text("Sí"),
+                        Row(
+                          children: [
+                            
+                            SizedBox(width: 10),
+                            Text("No iniciado", style: TextStyle(fontSize: 16)),
+                          ],
                         ),
-                        SizedBox(width: 16),
-                        ElevatedButton(
-                          onPressed: () {
-                            // Acción al presionar "No"
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.orange,
+                        SizedBox(height: 30),
+                        Row(
+                          children: [
+                           
+                            SizedBox(width: 8),
+                            Text("Retrasado", style: TextStyle(fontSize: 16)),
+                          ],
+                        ),
+                        SizedBox(height: 30),
+                        Row(
+                          children: [
+                           
+                            SizedBox(width: 8),
+                            Text("Completado", style: TextStyle(fontSize: 16)),
+                          ],
+                        ),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        IconButton(
+                          icon: Icon(
+                            Icons.radio_button_off,
+                            color: noIniciadoSelected ? Colors.orange : Colors.grey,
                           ),
-                          child: Text("No"),
+                          onPressed: () {
+                            setState(() {
+                              noIniciadoSelected = !noIniciadoSelected;
+                               _updateServiceStatus("No Iniciado");
+                            });
+                            Navigator.pushNamed(context, '/monitoreoservicio');
+                          },
+                        ),
+                        SizedBox(height: 16),
+                        IconButton(
+                          icon: Icon(
+                            Icons.radio_button_off,
+                            color: retrasadoSelected ? Colors.orange : Colors.grey,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              retrasadoSelected = !retrasadoSelected;
+                               _updateServiceStatus("retrasado");
+                            });
+                          },
+                        ),
+                        SizedBox(height: 16),
+                        IconButton(
+                          icon: Icon(
+                            Icons.radio_button_off,
+                            color: completadoSelected ? Colors.orange : Colors.grey,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              completadoSelected = !completadoSelected;
+                               _updateServiceStatus("completado");
+                            });
+                            Navigator.pushNamed(context, '/calificacion');
+                          },
                         ),
                       ],
                     ),
                   ],
                 ),
-              ),
+              ],
             ),
           ),
         ],
       ),
       // Barra de navegación inferior
-      // Barra de navegación inferior
-
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(12),
         child: Row(
@@ -256,7 +197,6 @@ class _ProgresoServicioState extends State<ProgresoServicio> {
                 Navigator.pushNamed(context, '/soporte');
               },
             ),
-
           ],
         ),
       ),
@@ -264,7 +204,7 @@ class _ProgresoServicioState extends State<ProgresoServicio> {
   }
 
   // Método para construir los botones de navegación
- Widget _buildNavButton({
+  Widget _buildNavButton({
     required IconData icon,
     required String label,
     required VoidCallback onPressed,

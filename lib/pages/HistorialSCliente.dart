@@ -41,9 +41,11 @@ class HistorialSCliente extends StatelessWidget {
       for (var doc in serviceSnapshot.docs) {
         String providerUserId = doc['proveedor'];  // Now fetching provider details
         String providerName = await _fetchProviderName(providerUserId);
+        String serviceId = doc.id;
         providerDetails.add({
           'providerUserId': providerUserId,
           'providerName': providerName,
+          'serviceId': serviceId,
         });
       }
 
@@ -88,7 +90,7 @@ class HistorialSCliente extends StatelessWidget {
 
         String clientUserId = clientSnapshot.data ?? 'No ID';
 
-        return FutureBuilder<List<Map<String, String>>>(
+        return FutureBuilder<List<Map<String, String>>>( 
           future: _fetchProviderDetails(clientUserId), // Fetch provider details for the client
           builder: (context, providerSnapshot) {
             if (providerSnapshot.connectionState == ConnectionState.waiting) {
@@ -107,7 +109,13 @@ class HistorialSCliente extends StatelessWidget {
 
             return Column(
               children: providerDetails.map((provider) {
-                return _buildServiceCard(context, provider['providerName']!, provider['providerUserId']!);
+                // Pass the serviceId along with the provider details
+                return _buildServiceCard(
+                  context,
+                  provider['providerName']!,
+                  provider['providerUserId']!,
+                  provider['serviceId']!, // Pass the serviceId here
+                );
               }).toList(),
             );
           },
@@ -117,74 +125,78 @@ class HistorialSCliente extends StatelessWidget {
   }
 
   // Builds each service card for provider details
- Widget _buildServiceCard(BuildContext context, String providerName, String providerUserId) {
-  return Card(
-    color: Colors.orange[200],
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(8),
-    ),
-    margin: const EdgeInsets.symmetric(vertical: 8),
-    child: Padding(
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        children: [
-          // Expande el texto a la izquierda
-          Expanded(
-            flex: 3,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'dd/mm/aa, 00:00', // Placeholder para la fecha
-                  style: TextStyle(
-                    color: Colors.grey[800],
-                    fontSize: 14,
+  Widget _buildServiceCard(BuildContext context, String providerName, String providerUserId, String serviceId) {
+    return Card(
+      color: Colors.orange[200],
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
+            // Expande el texto a la izquierda
+            Expanded(
+              flex: 3,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'dd/mm/aa, 00:00', // Placeholder para la fecha
+                    style: TextStyle(
+                      color: Colors.grey[800],
+                      fontSize: 14,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  providerName,
-                  style: TextStyle(
-                    color: Colors.grey[800],
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
+                  const SizedBox(height: 4),
+                  Text(
+                    providerName,
+                    style: TextStyle(
+                      color: Colors.grey[800],
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'por confirmar', // Estado del servicio
-                  style: TextStyle(
-                    color: Colors.grey[700],
-                    fontSize: 14,
+                  const SizedBox(height: 4),
+                  Text(
+                    'por confirmar', // Estado del servicio
+                    style: TextStyle(
+                      color: Colors.grey[700],
+                      fontSize: 14,
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ),
-          
-          // Espacio para el botón a la derecha
-          Expanded(
-            flex: 2, // Hace que el botón ocupe menos espacio
-            child: Align(
-              alignment: Alignment.centerRight, // Alinea el botón a la derecha
-              child: TextButton(
-                onPressed: () {
-                  // Aquí puedes agregar la lógica para confirmar el servicio
-                  Navigator.pushNamed(context, '/confirmacionservicio'); // Llamar a la función de confirmación
-                },
-                style: TextButton.styleFrom(
-                  backgroundColor: Colors.orange, // Color de fondo para el botón
-                  foregroundColor: Colors.white, // Color del texto
-                ),
-                child: const Text('Confirmar servicio'),
+                ],
               ),
             ),
-          ),
-        ],
+            // Espacio para el botón a la derecha
+            Expanded(
+              flex: 2, // Hace que el botón ocupe menos espacio
+              child: Align(
+                alignment: Alignment.centerRight, // Alinea el botón a la derecha
+                child: TextButton(
+                  onPressed: () {
+                    // Aquí puedes agregar la lógica para confirmar el servicio
+                    Navigator.pushNamed(
+                      context, 
+                      '/confirmacionservicio', 
+                      arguments: serviceId,  // Pass the serviceId to the confirmation screen
+                    ); // Llamar a la función de confirmación
+                  },
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.orange, // Color de fondo para el botón
+                    foregroundColor: Colors.white, // Color del texto
+                  ),
+                  child: const Text('Confirmar servicio'),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
+
   // Builds navigation buttons for the bottom navigation bar
   Widget _buildNavButton({
     required IconData icon,
@@ -246,15 +258,13 @@ class HistorialSCliente extends StatelessWidget {
                 Navigator.pushNamed(context, '/perfilcliente');  // Adjust navigation path for cliente
               },
             ),
- _buildNavButton(
-          icon: Icons.support_agent,
-          label: 'Soporte',
-          onPressed: () {
-            Navigator.pushNamed(context, '/soporte');
-          },
-        ),
-
-
+            _buildNavButton(
+              icon: Icons.support_agent,
+              label: 'Soporte',
+              onPressed: () {
+                Navigator.pushNamed(context, '/soporte');
+              },
+            ),
           ],
         ),
       ),
