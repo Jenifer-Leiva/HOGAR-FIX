@@ -1,7 +1,88 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class PerfilCliente extends StatelessWidget {
+class PerfilCliente extends StatefulWidget {
   const PerfilCliente({super.key});
+
+  @override
+  State<PerfilCliente> createState() => _PerfilClienteState();
+}
+
+class _PerfilClienteState extends State<PerfilCliente> {
+  late Future<Map<String, dynamic>?> _userDataFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _userDataFuture = _fetchUserData();
+  }
+
+  Future<Map<String, dynamic>?> _fetchUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userIdCliente = prefs.getString('userIdCliente');
+    
+    if (userIdCliente != null) {
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('Clientes')
+          .doc(userIdCliente)
+          .get();
+      if (userDoc.exists) {
+        return userDoc.data() as Map<String, dynamic>?;
+      }
+    }
+    return null;
+  }
+
+  // Método para eliminar el usuario
+  Future<void> _deleteUser() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userIdCliente = prefs.getString('userIdCliente');
+    
+    if (userIdCliente != null) {
+      try {
+        await FirebaseFirestore.instance
+            .collection('Clientes')
+            .doc(userIdCliente)
+            .delete(); // Elimina el documento de la base de datos
+        prefs.remove('userId'); // Opcionalmente, puedes eliminar el userId guardado en SharedPreferences
+        Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false); // Redirige al inicio
+      } catch (e) {
+        print('Error al eliminar la cuenta: $e');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Error al eliminar la cuenta"))
+        );
+      }
+    }
+  }
+
+  // Método para mostrar un diálogo de confirmación
+  void _showDeleteConfirmationDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("¿Estás seguro?"),
+          content: const Text("Esta acción eliminará permanentemente tu cuenta."),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Cerrar el diálogo
+              },
+              child: const Text("Cancelar"),
+            ),
+            TextButton(
+              onPressed: () {
+                _deleteUser(); // Eliminar el usuario si se confirma
+                Navigator.of(context).pop(); // Cerrar el diálogo
+              },
+              child: const Text("Eliminar"),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -9,7 +90,6 @@ class PerfilCliente extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Sección de Foto de Perfil
             Container(
               color: Colors.orange,
               padding: const EdgeInsets.all(40),
@@ -24,32 +104,47 @@ class PerfilCliente extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-
-            // Nombre del Cliente
-            const Text(
-              "Nombre",
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            FutureBuilder<Map<String, dynamic>?>( 
+              future: _userDataFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return const Text("Error al cargar los datos");
+                } else if (snapshot.data == null) {
+                  return const Text("Usuario no encontrado");
+                } else {
+                  Map<String, dynamic> userData = snapshot.data!;
+                  return Column(
+                    children: [
+                      Text(
+                        userData['Nombre'] ?? 'Nombre',
+                        style: const TextStyle(
+                            fontSize: 24, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 15),
+                      _buildSectionTitle("Información personal"),
+                      _buildInfoRow("Correo", userData['Correo']),
+                      _buildInfoRow("Dirección", userData['Dirección']),
+                      _buildInfoRow("Celular", userData['Celular']),
+                    ],
+                  );
+                }
+              },
             ),
-            const SizedBox(height: 15),
-
-            // Sección de Información Personal
-            _buildSectionTitle("Información personal"),
-            _buildInfoRow("Correo"),
-            _buildInfoRow("Dirección"),
-            _buildInfoRow("Celular"),
-            const SizedBox(height: 15),
-
-            const Divider(
-              color: Colors.orange,
-              thickness: 1.5,
+            TextButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/');
+                // Acción para cerrar sesión
+              },
+              child: const Text("Cerrar sesión", style: TextStyle(color: Colors.grey)),
             ),
-
-            // Sección de Soporte
-            _buildInfoRow("Cerrar sesión"),
-            _buildInfoRow("Eliminar cuenta"),
+            const SizedBox(height: 5),
+            TextButton(
+              onPressed: _showDeleteConfirmationDialog, // Llamamos al método para mostrar el diálogo
+              child: const Text("Eliminar cuenta", style: TextStyle(color: Colors.grey)),
+            ),
             const SizedBox(height: 20),
-
-            // Botón Editar Información
             ElevatedButton(
               onPressed: () {
                 Navigator.pushNamed(context, '/editarperfilcliente');
@@ -64,16 +159,15 @@ class PerfilCliente extends StatelessWidget {
           ],
         ),
       ),
-
-      // Barra de navegación inferior con Soporte a la derecha de Mi perfil
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(12),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
+            
             _buildNavButton(
               icon: Icons.home_repair_service,
-              label: 'Servicios',
+              label: 'servicios',
               onPressed: () {
                 Navigator.pushNamed(context, '/iniciocliente');
               },
@@ -105,7 +199,6 @@ class PerfilCliente extends StatelessWidget {
     );
   }
 
-  // Método auxiliar para construir títulos de sección
   Widget _buildSectionTitle(String title) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -129,11 +222,11 @@ class PerfilCliente extends StatelessWidget {
     );
   }
 
-  // Método auxiliar para construir cada fila de información
-  Widget _buildInfoRow(String label) {
+  Widget _buildInfoRow(String label, String? value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             label,
@@ -142,12 +235,18 @@ class PerfilCliente extends StatelessWidget {
               color: Colors.grey,
             ),
           ),
+          Text(
+            value ?? '',
+            style: const TextStyle(
+              fontSize: 16,
+              color: Colors.black,
+            ),
+          ),
         ],
       ),
     );
   }
 
-  // Método para construir un botón de navegación con icono y texto debajo
   Widget _buildNavButton({
     required IconData icon,
     required String label,

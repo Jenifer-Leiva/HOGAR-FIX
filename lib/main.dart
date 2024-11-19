@@ -1,12 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-
 import 'package:hogarfixapp/firebase_options.dart';
-import 'package:hogarfixapp/pages/Calificacion.dart';
+
 
 //paginas_cod
+import 'package:hogarfixapp/pages/Calificacion.dart';
 import 'package:hogarfixapp/pages/CambioContrasenia.dart';
-import 'package:hogarfixapp/pages/CancelacionServicio.dart';
+
 import 'package:hogarfixapp/pages/Chat.dart';
 import 'package:hogarfixapp/pages/ConfirmacionServicio.dart';
 import 'package:hogarfixapp/pages/DetallesProveedor.dart';
@@ -17,7 +17,6 @@ import 'package:hogarfixapp/pages/HistorialSProveedor.dart';
 import 'package:hogarfixapp/pages/InicioCliente.dart';
 import 'package:hogarfixapp/pages/InicioProveedor.dart';
 import 'package:hogarfixapp/pages/Login.dart';
-import 'package:hogarfixapp/pages/MonitoreoServicio.dart';
 import 'package:hogarfixapp/pages/PerfilCliente.dart';
 import 'package:hogarfixapp/pages/PerfilProveedor.dart';
 import 'package:hogarfixapp/pages/ProgresoServicio.dart';
@@ -54,12 +53,10 @@ class MainApp extends StatelessWidget {
         '/chat': (context) => const Chat(),
 
         '/progresoservicio': (context) => const ProgresoServicio(),
-        '/cancelacionservicio': (context) => const CancelacionServicio(),
-        '/monitoreoservicio': (context) => const MonitoreoServicio(),
         '/calificacion': (context) => const Calificacion(),
 
         '/perfilproveedor': (context) => const PerfilProveedor(),
-        '/editarperfilproveedor': (context) => const EditarPerfilProveedor(),
+        '/editarperfilproveedor': (context) =>  EditarPerfilProveedor(),
        '/inicioproveedor': (context) =>  InicioProveedor(),
         
         

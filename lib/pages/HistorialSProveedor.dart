@@ -1,7 +1,57 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HistorialSProveedor extends StatelessWidget {
   const HistorialSProveedor({super.key});
+
+  // Function to get provider's user ID from SharedPreferences
+  Future<String> _getProviderUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('providerUserId') ?? 'No ID'; // Return a default value if not found
+  }
+
+  // Function to fetch the client name from the "Clientes" collection
+  Future<String> _fetchClientName(String clientUserId) async {
+    try {
+      final clientSnapshot = await FirebaseFirestore.instance
+          .collection('Clientes')
+          .doc(clientUserId)
+          .get();
+
+      if (clientSnapshot.exists) {
+        return clientSnapshot['Nombre'] ?? 'Nombre no disponible';
+      } else {
+        return 'Cliente no encontrado';
+      }
+    } catch (e) {
+      return 'Error al cargar cliente';
+    }
+  }
+
+  // Function to fetch services from Firestore and return the list of clients for the provider
+  Future<List<Map<String, String>>> _fetchClientDetails(String providerUserId) async {
+    try {
+      final serviceSnapshot = await FirebaseFirestore.instance
+          .collection('Servicios')
+          .where('proveedor', isEqualTo: providerUserId)
+          .get();
+
+      List<Map<String, String>> clientDetails = [];
+      for (var doc in serviceSnapshot.docs) {
+        String clientUserId = doc['cliente'];
+        String clientName = await _fetchClientName(clientUserId);
+        clientDetails.add({
+          'clientUserId': clientUserId,
+          'clientName': clientName,
+        });
+      }
+
+      return clientDetails; // Return the list of client details
+    } catch (e) {
+      return []; // Return an empty list in case of error
+    }
+  }
 
   Widget _buildHeader() {
     return Container(
@@ -23,14 +73,51 @@ class HistorialSProveedor extends StatelessWidget {
     );
   }
 
+  // Builds the service history list
   Widget _buildServiceHistory(BuildContext context) {
-    return Column(
-      children: List.generate(5, (index) => _buildServiceCard(context, index)),
+    return FutureBuilder<String>(
+      future: _getProviderUserId(),  // Get provider user ID
+      builder: (context, providerSnapshot) {
+        if (providerSnapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator(); // Loading indicator while fetching provider ID
+        }
+
+        if (providerSnapshot.hasError) {
+          return Text('Error: ${providerSnapshot.error}');
+        }
+
+        String providerUserId = providerSnapshot.data ?? 'No ID';
+
+        return FutureBuilder<List<Map<String, String>>>(
+          future: _fetchClientDetails(providerUserId), // Fetch client details for the provider
+          builder: (context, clientSnapshot) {
+            if (clientSnapshot.connectionState == ConnectionState.waiting) {
+              return CircularProgressIndicator(); // Loading indicator while fetching clients
+            }
+
+            if (clientSnapshot.hasError) {
+              return Text('Error al cargar clientes');
+            }
+
+            List<Map<String, String>> clientDetails = clientSnapshot.data ?? [];
+
+            if (clientDetails.isEmpty) {
+              return Text('No hay clientes asociados');
+            }
+
+            return Column(
+              children: clientDetails.map((client) {
+                return _buildServiceCard(context, client['clientName']!, client['clientUserId']!);
+              }).toList(),
+            );
+          },
+        );
+      },
     );
   }
 
-  Widget _buildServiceCard(BuildContext context, int index) {
-    bool inProgress = index == 0; // Solo el primer servicio está en proceso
+  // Builds each service card
+  Widget _buildServiceCard(BuildContext context, String clientName, String clientUserId) {
     return Card(
       color: Colors.orange[200],
       shape: RoundedRectangleBorder(
@@ -46,7 +133,7 @@ class HistorialSProveedor extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'dd/mm/aa, 00:00',
+                  'dd/mm/aa, 00:00', // Placeholder for dynamic date
                   style: TextStyle(
                     color: Colors.grey[800],
                     fontSize: 14,
@@ -54,7 +141,7 @@ class HistorialSProveedor extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Nombre proveedor',
+                  clientName,
                   style: TextStyle(
                     color: Colors.grey[800],
                     fontSize: 14,
@@ -63,37 +150,13 @@ class HistorialSProveedor extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  inProgress ? 'En proceso' : 'Completado',
+                  'en progreso', // Replace with your service status
                   style: TextStyle(
                     color: Colors.grey[700],
                     fontSize: 14,
                   ),
                 ),
-                if (inProgress)
-                  GestureDetector(
-                    onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Servicio cancelado')),
-                      );
-                    },
-                    child: const Text(
-                      'Cancelar',
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
               ],
-            ),
-            Text(
-              'Tipo de servicio',
-              style: TextStyle(
-                color: Colors.grey[800],
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
             ),
           ],
         ),
@@ -101,7 +164,12 @@ class HistorialSProveedor extends StatelessWidget {
     );
   }
 
-  Widget _buildNavButton({required IconData icon, required String label, required VoidCallback onPressed}) {
+  // Builds navigation buttons for the bottom navigation bar
+  Widget _buildNavButton({
+    required IconData icon,
+    required String label,
+    required VoidCallback onPressed,
+  }) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -121,7 +189,7 @@ class HistorialSProveedor extends StatelessWidget {
         title: const Text("Historial de Servicios"),
         backgroundColor: Colors.orange,
       ),
-      body: SingleChildScrollView(  // Se añadió para permitir desplazamiento
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
@@ -131,8 +199,6 @@ class HistorialSProveedor extends StatelessWidget {
           ],
         ),
       ),
-      // Barra de navegación inferior
-
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(12),
         child: Row(
@@ -165,27 +231,3 @@ class HistorialSProveedor extends StatelessWidget {
     );
   }
 }
-
-Widget _buildNavButton({
-    required IconData icon,
-    required String label,
-    required VoidCallback onPressed,
-  }) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        IconButton(
-          icon: Icon(icon, size: 28, color: Colors.orange),
-          onPressed: onPressed,
-        ),
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 12,
-            color: Colors.orange,
-          ),
-        ),
-      ],
-    );
-  }
-

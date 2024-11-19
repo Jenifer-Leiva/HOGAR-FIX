@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -10,6 +12,89 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  FirebaseFirestore baseDatos = FirebaseFirestore.instance;
+
+  Future<void> iniciarSesion() async {
+    String email = emailController.text;
+    String password = passwordController.text;
+
+    try {
+      // Verificar en la colección Proveedores
+      QuerySnapshot proveedores = await baseDatos
+          .collection('Proveedores')
+          .where('Correo', isEqualTo: email)
+          .where('Contraseña', isEqualTo: password)
+          .get();
+
+      if (proveedores.docs.isNotEmpty) {
+        String proveedorId = proveedores.docs.first.id;
+        await _guardarDatosUsuario(proveedorId, 'Proveedor');
+        Navigator.pushNamed(context, '/perfilproveedor');
+        return;
+      }
+
+      // Verificar en la colección Clientes
+      QuerySnapshot clientes = await baseDatos
+          .collection('Clientes')
+          .where('Correo', isEqualTo: email)
+          .where('Contraseña', isEqualTo: password)
+          .get();
+
+      if (clientes.docs.isNotEmpty) {
+        String clienteId = clientes.docs.first.id;
+        await _guardarDatosUsuario(clienteId, 'Cliente');
+        Navigator.pushNamed(context, '/perfilcliente');
+        return;
+      }
+
+      // Si no encuentra coincidencias en ninguna colección
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text("Error"),
+          content: const Text("Credenciales incorrectas"),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("OK"),
+            ),
+          ],
+        ),
+      );
+    } catch (e) {
+      print("Error: $e");
+      // Manejo de errores opcional
+    }
+  }
+
+  Future<void> _guardarDatosUsuario(String userId, String userType) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    
+    // Guardar el userId y userType en SharedPreferences
+  if (userType == 'Proveedor') {
+  await prefs.setString('providerUserId', userId);
+} else if (userType == 'Cliente') {
+  await prefs.setString('userIdCliente', userId);
+}
+
+    if (userType == 'Proveedor') {
+      // Si es un proveedor, obtenemos datos adicionales de la colección 'Proveedores'
+      try {
+        DocumentSnapshot proveedorSnapshot = await baseDatos.collection('Proveedores').doc(userId).get();
+
+        if (proveedorSnapshot.exists) {
+          // Guardamos información adicional del proveedor en SharedPreferences (por ejemplo, nombre y correo)
+          String nombreProveedor = proveedorSnapshot['Nombre'] ?? '';
+          String correoProveedor = proveedorSnapshot['Correo'] ?? '';
+
+          await prefs.setString('nombreProveedor', nombreProveedor);
+          await prefs.setString('correoProveedor', correoProveedor);
+        }
+      } catch (e) {
+        print("Error al obtener datos del proveedor: $e");
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,8 +152,7 @@ class _LoginState extends State<Login> {
               alignment: Alignment.centerRight,
               child: TextButton(
                 onPressed: () {
-                   Navigator.pushNamed(context, '/cambiocontraseña');
-                  // Acción para "Olvidaste tu contraseña?"
+                  Navigator.pushNamed(context, '/cambiocontraseña');
                 },
                 child: const Text(
                   "¿Olvidaste tu contraseña?",
@@ -85,12 +169,10 @@ class _LoginState extends State<Login> {
                   borderRadius: BorderRadius.circular(10),
                   side: const BorderSide(color: Colors.orangeAccent, width: 2),
                 ),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 100, vertical: 15),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 100, vertical: 15),
               ),
-              onPressed: () {
-                // Acción para iniciar sesión (validación y autenticación)
-              },
+              onPressed: iniciarSesion,
               child: const Text(
                 "Iniciar sesión",
                 style: TextStyle(fontSize: 16),

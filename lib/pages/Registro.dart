@@ -13,7 +13,6 @@ class _RegistroState extends State<Registro> {
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -118,9 +117,9 @@ class _RegistroState extends State<Registro> {
                       nameController.text,
                       emailController.text,
                       phoneController.text,
-                      passwordController.text, // Añadir la contraseña
+                      passwordController.text,// Añadir la contraseña
                     ).then((_) {
-                       Navigator.pushNamed(context, '/perfilproveedor');
+                       Navigator.pushNamed(context, '/');
                     });
                   },
                   child: const Text("PROVEEDOR"),
@@ -139,7 +138,7 @@ class _RegistroState extends State<Registro> {
                       phoneController.text,
                       passwordController.text, // Añadir la contraseña
                     ).then((_) {
-                      Navigator.pushNamed(context, '/perfilcliente');
+                      Navigator.pushNamed(context, '/');
                     });
                   },
                   child: const Text("CLIENTE"),
